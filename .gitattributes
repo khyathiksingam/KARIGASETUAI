@@ -1,14 +1,11 @@
 # GitHub Linguist Language Detection Configuration
-backend/** linguist-vendored
-backend/** linguist-detectable=false
-karigasetu_mobile/** linguist-vendored
-karigasetu_mobile/** linguist-detectable=false
-docs/** linguist-documentation
-docs/** linguist-detectable=false
+# Ensure repository is strictly detected as JavaScript, CSS, and HTML
+*.jsx linguist-language=JavaScript
+*.js linguist-language=JavaScript
+*.css linguist-language=CSS
+*.html linguist-language=HTML
 
-src/** linguist-detectable=true
-public/** linguist-detectable=true
-index.html linguist-detectable=true
-*.css linguist-detectable=true
-*.jsx linguist-detectable=true
-*.js linguist-detectable=true
+# Non-code metadata
+*.json linguist-detectable=false
+*.sql linguist-detectable=false
+*.md linguist-documentation=true
