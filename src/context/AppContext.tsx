@@ -96,6 +96,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const STORAGE_KEYS = {
   USER: 'karigarsetu_user',
   ROLE: 'karigarsetu_role',
+  AUTH_SESSION: 'karigarsetu_auth_session_active_v2',
   PRODUCTS: 'karigarsetu_products',
   CART: 'karigarsetu_cart',
   WISHLIST: 'karigarsetu_wishlist',
@@ -114,8 +115,14 @@ function getBadgeForCredits(credits: number): ArtisanBadge {
 }
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load persistent state or fall back to rich seeds
+  // Load persistent state: first-time visitors start logged out as guests
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+    const hasActiveSession = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION) === 'true';
+    if (!hasActiveSession) {
+      // Clear legacy auto-saved session if present from previous builds
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      return null;
+    }
     const saved = localStorage.getItem(STORAGE_KEYS.USER);
     if (saved) {
       try {
@@ -124,12 +131,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         console.error(e);
       }
     }
-    return DEMO_SELLERS[0]; // Default logged-in as Ravi Kumar for instant judging preview
+    return null;
   });
 
   const [currentRole, setCurrentRole] = useState<UserRole>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ROLE);
-    return (saved as UserRole) || 'seller';
+    const hasActiveSession = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION) === 'true';
+    if (hasActiveSession) {
+      const saved = localStorage.getItem(STORAGE_KEYS.ROLE);
+      if (saved) return saved as UserRole;
+    }
+    return 'buyer';
   });
 
   const [products, setProducts] = useState<Product[]>(() => {
@@ -234,9 +245,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [coupons]);
   useEffect(() => {
     if (currentUser) {
+      localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
       localStorage.setItem(STORAGE_KEYS.ROLE, currentUser.role);
     } else {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
   }, [currentUser]);
@@ -374,7 +387,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const logout = () => {
     setCurrentUser(null);
+    setCurrentRole('buyer');
+    localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
     localStorage.removeItem(STORAGE_KEYS.USER);
+    localStorage.removeItem(STORAGE_KEYS.ROLE);
   };
 
   const switchRole = (newRole: UserRole) => {
@@ -772,8 +788,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Reset Demo
   const resetDemoData = () => {
     localStorage.clear();
-    setCurrentUser(DEMO_SELLERS[0]);
-    setCurrentRole('seller');
+    setCurrentUser(null);
+    setCurrentRole('buyer');
     setProducts(INITIAL_PRODUCTS);
     setCart([]);
     setWishlist(['prod_1', 'prod_4']);

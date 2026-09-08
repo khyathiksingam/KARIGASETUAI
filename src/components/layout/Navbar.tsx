@@ -119,14 +119,24 @@ export const Navbar: React.FC = () => {
               <LayoutDashboard className="w-4 h-4" />
               <span>Artisan Portal</span>
             </Link>
-          ) : (
+          ) : currentUser?.role === 'buyer' ? (
             <Link 
               to="/buyer/orders" 
-              className={`hover:text-heritage-terracotta transition ${
+              className={`hover:text-heritage-terracotta transition flex items-center space-x-1 ${
                 location.pathname.startsWith('/buyer') ? 'text-heritage-terracotta font-bold' : ''
               }`}
             >
-              My Orders
+              <ShoppingBag className="w-4 h-4" />
+              <span>My Orders</span>
+            </Link>
+          ) : (
+            <Link 
+              to="/login"
+              state={{ from: { pathname: '/seller/dashboard' } }}
+              className={`hover:text-heritage-terracotta transition flex items-center space-x-1 text-heritage-brown`}
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Artisan Portal</span>
             </Link>
           )}
         </nav>
@@ -283,13 +293,13 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Link
                 to="/login"
-                className="px-3.5 py-1.5 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta transition"
+                className="px-4 py-1.5 text-xs font-bold text-heritage-brown hover:text-heritage-terracotta border border-heritage-terracotta/30 hover:border-heritage-terracotta bg-white/90 rounded-full shadow-xs transition"
               >
                 Login
               </Link>
               <Link
                 to="/select-role"
-                className="px-4 py-1.5 text-sm font-semibold bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white rounded-full shadow-3d-sm transition"
+                className="px-4 py-1.5 text-xs font-bold bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white rounded-full shadow-3d-sm hover:shadow-3d transition"
               >
                 Sign Up
               </Link>
@@ -360,7 +370,7 @@ export const Navbar: React.FC = () => {
             >
               Artisan Dashboard
             </Link>
-          ) : (
+          ) : currentUser?.role === 'buyer' ? (
             <Link
               to="/buyer/orders"
               onClick={() => setMobileMenuOpen(false)}
@@ -368,8 +378,17 @@ export const Navbar: React.FC = () => {
             >
               My Orders
             </Link>
+          ) : (
+            <Link
+              to="/login"
+              state={{ from: { pathname: '/seller/dashboard' } }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
+            >
+              Artisan Portal
+            </Link>
           )}
-          {currentUser && (
+          {currentUser ? (
             <button
               onClick={() => {
                 logout();
@@ -381,6 +400,23 @@ export const Navbar: React.FC = () => {
               <LogOut className="w-4 h-4" />
               <span>Sign Out</span>
             </button>
+          ) : (
+            <div className="pt-3 border-t border-heritage-sand/60 flex space-x-2">
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 text-center py-2 text-xs font-bold text-heritage-brown bg-heritage-sand/40 hover:bg-heritage-sand/70 rounded-xl transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/select-role"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 text-center py-2 text-xs font-bold text-white bg-heritage-terracotta hover:bg-heritage-terracotta-dark rounded-xl transition"
+              >
+                Sign Up
+              </Link>
+            </div>
           )}
         </div>
       )}

@@ -31,7 +31,7 @@ import { AIAnalysisResult } from '../../types';
 import { CameraCaptureModal } from '../../components/common/CameraCaptureModal';
 
 export const AIProductAnalyzerPage: React.FC = () => {
-  const { addProduct, currentUser } = useApp();
+  const { addProduct, currentUser, loginAsSeller } = useApp();
   const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -127,6 +127,10 @@ export const AIProductAnalyzerPage: React.FC = () => {
   const handlePublishDirectly = () => {
     if (!analysisResult || !selectedImage) return;
 
+    if (!currentUser || currentUser.role !== 'seller') {
+      loginAsSeller();
+    }
+
     const newProd = addProduct({
       name: analysisResult.productName,
       description: `${analysisResult.descriptionSnippet} Traditional ${analysisResult.model} handcrafted in ${currentUser?.state || 'India'}. Evaluated by KarigarSetu AI vision with a quality benchmark of ${analysisResult.qualityScore}/5.`,
@@ -168,6 +172,9 @@ export const AIProductAnalyzerPage: React.FC = () => {
 
   const handleEditBeforePublish = () => {
     if (!analysisResult) return;
+    if (!currentUser || currentUser.role !== 'seller') {
+      loginAsSeller();
+    }
     // Pass state to AddProductPage
     navigate('/seller/products/new', {
       state: {

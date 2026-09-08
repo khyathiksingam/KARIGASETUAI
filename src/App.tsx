@@ -65,11 +65,7 @@ export const App: React.FC = () => {
               />
               <Route
                 path="/seller/ai-analyzer"
-                element={
-                  <RoleGuard allowedRole="seller">
-                    <AIProductAnalyzerPage />
-                  </RoleGuard>
-                }
+                element={<AIProductAnalyzerPage />}
               />
               <Route
                 path="/seller/products"

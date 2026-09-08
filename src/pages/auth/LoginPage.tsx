@@ -12,8 +12,16 @@ export const LoginPage: React.FC = () => {
   const location = useLocation();
 
   const [authMethod, setAuthMethod] = useState<'credentials' | 'otp'>('credentials');
-  const [identity, setIdentity] = useState('seller_demo');
-  const [password, setPassword] = useState('Seller@123');
+  const [rememberMe, setRememberMe] = useState(true);
+  const [identity, setIdentity] = useState(() => {
+    return localStorage.getItem('karigarsetu_remembered_identity') || '';
+  });
+  const [password, setPassword] = useState(() => {
+    const rem = localStorage.getItem('karigarsetu_remembered_identity');
+    if (rem === 'seller_demo' || rem === 'ravi@ravicrafts.com') return 'Seller@123';
+    if (rem === 'buyer_demo' || rem === 'ananya.s@heritagearts.in') return 'Buyer@123';
+    return '';
+  });
   const [otpTargetType, setOtpTargetType] = useState<'mobile' | 'email'>('mobile');
   const [mobile, setMobile] = useState('+91 92814 32397');
   const [email, setEmail] = useState('artisan@karigarsetu.ai');
@@ -50,7 +58,22 @@ export const LoginPage: React.FC = () => {
     setErrorMsg('');
     const success = login(identity, password);
     if (success) {
-      navigate('/seller/dashboard');
+      if (rememberMe) {
+        localStorage.setItem('karigarsetu_remembered_identity', identity);
+      } else {
+        localStorage.removeItem('karigarsetu_remembered_identity');
+      }
+      const from = (location.state as any)?.from?.pathname;
+      if (from) {
+        navigate(from, { replace: true });
+      } else {
+        const idClean = identity.trim().toLowerCase();
+        if (idClean.includes('buyer') || idClean.includes('ananya')) {
+          navigate('/buyer/marketplace');
+        } else {
+          navigate('/seller/dashboard');
+        }
+      }
     } else {
       setErrorMsg('Invalid username or password. Please use the quick demo presets below.');
     }
@@ -87,7 +110,13 @@ export const LoginPage: React.FC = () => {
     if (isValid) {
       const success = verifyOtp(targetContact, otp, selectedRole);
       if (success) {
-        if (selectedRole === 'seller') {
+        if (rememberMe) {
+          localStorage.setItem('karigarsetu_remembered_identity', targetContact);
+        }
+        const from = (location.state as any)?.from?.pathname;
+        if (from) {
+          navigate(from, { replace: true });
+        } else if (selectedRole === 'seller') {
           navigate('/seller/dashboard');
         } else {
           navigate('/buyer/marketplace');
@@ -101,12 +130,13 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
+    const dest = (location.state as any)?.from?.pathname;
     if (selectedRole === 'seller') {
       loginAsSeller();
-      navigate('/seller/dashboard');
+      navigate(dest || '/seller/dashboard');
     } else {
       loginAsBuyer();
-      navigate('/buyer/marketplace');
+      navigate(dest || '/buyer/marketplace');
     }
   };
 
@@ -142,9 +172,13 @@ export const LoginPage: React.FC = () => {
               type="button"
               onClick={() => {
                 loginAsSeller();
-                navigate('/seller/dashboard');
+                if (rememberMe) {
+                  localStorage.setItem('karigarsetu_remembered_identity', 'seller_demo');
+                }
+                const dest = (location.state as any)?.from?.pathname || '/seller/dashboard';
+                navigate(dest);
               }}
-              className="p-3 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
+              className="p-3 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group cursor-pointer"
             >
               <Avatar src="/avatars/ravi-kumar.jpg" name="Ravi Kumar" role="seller" size="sm" className="border-white/40 group-hover:scale-105 transition-transform shrink-0" />
               <div className="min-w-0">
@@ -156,9 +190,13 @@ export const LoginPage: React.FC = () => {
               type="button"
               onClick={() => {
                 loginAsBuyer();
-                navigate('/buyer/marketplace');
+                if (rememberMe) {
+                  localStorage.setItem('karigarsetu_remembered_identity', 'buyer_demo');
+                }
+                const dest = (location.state as any)?.from?.pathname || '/buyer/marketplace';
+                navigate(dest);
               }}
-              className="p-3 rounded-2xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
+              className="p-3 rounded-2xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group cursor-pointer"
             >
               <Avatar src="/avatars/ananya-sharma.jpg" name="Ananya Sharma" role="buyer" size="sm" className="border-heritage-gold/40 group-hover:scale-105 transition-transform shrink-0" />
               <div className="min-w-0">
@@ -213,6 +251,31 @@ export const LoginPage: React.FC = () => {
           {authMethod === 'credentials' ? (
             /* Username + Password Form */
             <form onSubmit={handlePasswordLogin} className="space-y-4">
+              {/* Quick autofill helper chips */}
+              <div className="flex items-center space-x-2 pb-1">
+                <span className="text-[11px] text-heritage-charcoal/60 font-semibold">Autofill:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIdentity('seller_demo');
+                    setPassword('Seller@123');
+                  }}
+                  className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-heritage-terracotta/10 hover:bg-heritage-terracotta/20 text-heritage-terracotta border border-heritage-terracotta/20 transition cursor-pointer"
+                >
+                  Ravi Kumar (Artisan)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIdentity('buyer_demo');
+                    setPassword('Buyer@123');
+                  }}
+                  className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-heritage-brown/10 hover:bg-heritage-brown/20 text-heritage-brown border border-heritage-brown/20 transition cursor-pointer"
+                >
+                  Ananya Sharma (Buyer)
+                </button>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-heritage-brown mb-1">
                   Username or Email
@@ -221,10 +284,12 @@ export const LoginPage: React.FC = () => {
                   <User className="w-4 h-4 text-heritage-charcoal/40 absolute left-3.5 top-3" />
                   <input
                     type="text"
+                    name="username"
+                    autoComplete="username"
                     required
                     value={identity}
                     onChange={(e) => setIdentity(e.target.value)}
-                    placeholder="seller_demo or buyer_demo"
+                    placeholder="e.g. seller_demo or ravi@ravicrafts.com"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-heritage-sand bg-heritage-ivory/40 text-xs font-medium text-heritage-charcoal focus:border-heritage-terracotta focus:ring-1 focus:ring-heritage-terracotta outline-none"
                   />
                 </div>
@@ -237,7 +302,7 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <button
                     type="button"
-                    onClick={() => alert('Demo Password is: Seller@123 or Buyer@123')}
+                    onClick={() => alert('Demo Passwords: Seller@123 or Buyer@123')}
                     className="text-[11px] text-heritage-terracotta font-semibold hover:underline"
                   >
                     Forgot Password?
@@ -247,13 +312,30 @@ export const LoginPage: React.FC = () => {
                   <Lock className="w-4 h-4 text-heritage-charcoal/40 absolute left-3.5 top-3" />
                   <input
                     type="password"
+                    name="password"
+                    autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
+                    placeholder="Enter password (e.g. Seller@123)"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-heritage-sand bg-heritage-ivory/40 text-xs font-medium text-heritage-charcoal focus:border-heritage-terracotta focus:ring-1 focus:ring-heritage-terracotta outline-none"
                   />
                 </div>
+              </div>
+
+              {/* Remember Me & Autofill checkbox */}
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center space-x-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded text-heritage-terracotta border-heritage-sand focus:ring-heritage-terracotta cursor-pointer accent-heritage-terracotta"
+                  />
+                  <span className="text-xs text-heritage-charcoal/80 font-medium">
+                    Remember login & enable autofill
+                  </span>
+                </label>
               </div>
 
               <button
