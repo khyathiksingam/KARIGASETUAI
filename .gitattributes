@@ -1,0 +1,14 @@
+# GitHub Linguist Language Detection Configuration
+backend/** linguist-vendored
+backend/** linguist-detectable=false
+karigasetu_mobile/** linguist-vendored
+karigasetu_mobile/** linguist-detectable=false
+docs/** linguist-documentation
+docs/** linguist-detectable=false
+
+src/** linguist-detectable=true
+public/** linguist-detectable=true
+index.html linguist-detectable=true
+*.css linguist-detectable=true
+*.jsx linguist-detectable=true
+*.js linguist-detectable=true
