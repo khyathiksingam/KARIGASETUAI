@@ -68,6 +68,23 @@ export const Avatar: React.FC<AvatarProps> = ({
   const isRavi = normalizedName.includes('ravi') || normalizedName.includes('artisan');
   const isAnanya = normalizedName.includes('ananya');
 
+  // Multi-tier image candidate sources: 1. Passed src -> 2. Local project asset
+  const [srcIndex, setSrcIndex] = useState(0);
+  const candidateSources = [
+    src,
+    isRavi ? '/avatars/ravi-kumar.jpg' : isAnanya ? '/avatars/ananya-sharma.jpg' : null,
+  ].filter((s): s is string => !!s && s.trim().length > 0);
+
+  const activeSrc = candidateSources[srcIndex] || null;
+
+  const handleImgError = () => {
+    if (srcIndex < candidateSources.length - 1) {
+      setSrcIndex((prev) => prev + 1);
+    } else {
+      setHasError(true);
+    }
+  };
+
   const renderFallbackSvg = () => {
     if (isRavi) {
       // Indian Artisan (Ravi Kumar) Stylized SVG Avatar
@@ -155,11 +172,11 @@ export const Avatar: React.FC<AvatarProps> = ({
       className={`relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0 border-2 border-heritage-gold/50 shadow-sm bg-heritage-ivory ${container} ${className}`}
       title={name}
     >
-      {src && !hasError ? (
+      {activeSrc && !hasError ? (
         <img
-          src={src}
+          src={activeSrc}
           alt={name}
-          onError={() => setHasError(true)}
+          onError={handleImgError}
           className="w-full h-full object-cover"
         />
       ) : (

@@ -146,7 +146,7 @@ export const LoginPage: React.FC = () => {
               }}
               className="p-3 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
             >
-              <Avatar name="Ravi Kumar" size="sm" className="border-white/40 group-hover:scale-105 transition-transform" />
+              <Avatar src="/avatars/ravi-kumar.jpg" name="Ravi Kumar" role="seller" size="sm" className="border-white/40 group-hover:scale-105 transition-transform shrink-0" />
               <div className="min-w-0">
                 <span className="block leading-tight font-black">Try Seller Demo</span>
                 <span className="text-[10px] font-normal text-white/80 truncate block">Ravi Kumar (Artisan)</span>
@@ -160,7 +160,7 @@ export const LoginPage: React.FC = () => {
               }}
               className="p-3 rounded-2xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
             >
-              <Avatar name="Ananya Sharma" size="sm" className="border-heritage-gold/40 group-hover:scale-105 transition-transform" />
+              <Avatar src="/avatars/ananya-sharma.jpg" name="Ananya Sharma" role="buyer" size="sm" className="border-heritage-gold/40 group-hover:scale-105 transition-transform shrink-0" />
               <div className="min-w-0">
                 <span className="block leading-tight font-black text-white">Try Buyer Demo</span>
                 <span className="text-[10px] font-normal text-heritage-sand/80 truncate block">Ananya Sharma (Patron)</span>

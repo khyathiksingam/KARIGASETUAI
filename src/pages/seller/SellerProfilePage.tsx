@@ -61,7 +61,7 @@ export const SellerProfilePage: React.FC = () => {
   const [city, setCity] = useState(currentUser?.city || 'Warangal');
   const [state, setState] = useState(currentUser?.state || 'Telangana');
   const [profileImage, setProfileImage] = useState(
-    currentUser?.profile_image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'
+    currentUser?.profile_image || '/avatars/ravi-kumar.jpg'
   );
 
   // Bank fields

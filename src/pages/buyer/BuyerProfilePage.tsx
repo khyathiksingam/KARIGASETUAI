@@ -13,7 +13,7 @@ export const BuyerProfilePage: React.FC = () => {
   const [city, setCity] = useState(currentUser?.city || 'Bengaluru');
   const [state, setState] = useState(currentUser?.state || 'Karnataka');
   const [profileImage, setProfileImage] = useState(
-    currentUser?.profile_image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80'
+    currentUser?.profile_image || '/avatars/ananya-sharma.jpg'
   );
   const [saved, setSaved] = useState(false);
 

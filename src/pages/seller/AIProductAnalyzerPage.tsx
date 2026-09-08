@@ -43,10 +43,21 @@ export const AIProductAnalyzerPage: React.FC = () => {
   const [isMockResult, setIsMockResult] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [publishedSuccess, setPublishedSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageFile = (file: File) => {
+    setUploadError(null);
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please select a valid image file (PNG, JPG, WEBP).');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadError('The selected image is larger than 15MB. Please choose a smaller photo.');
+      return;
+    }
+
     setFileObject(file);
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -55,6 +66,9 @@ export const AIProductAnalyzerPage: React.FC = () => {
       setPublishedSuccess(false);
       setCurrentStepIndex(-1);
       setCompletedSteps([]);
+    };
+    reader.onerror = () => {
+      setUploadError('Failed to read image from device. Please try another photo.');
     };
     reader.readAsDataURL(file);
     if (fileInputRef.current) {
@@ -363,6 +377,13 @@ export const AIProductAnalyzerPage: React.FC = () => {
                 <span>Capture with Camera</span>
               </button>
             </div>
+
+            {uploadError && (
+              <div className="mt-3 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-semibold flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{uploadError}</span>
+              </div>
+            )}
 
             {/* SECTION 46 & QUICK SAMPLES: Judge Presets - Added after Image Source Upload / Capture */}
             <div className="mt-4 pt-4 border-t border-heritage-sand">

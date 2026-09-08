@@ -347,8 +347,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       email: userData.email || 'artisan@karigarsetu.ai',
       mobile: userData.mobile || '+91 98765 43210',
       profile_image: userData.profile_image || (role === 'seller' 
-        ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'
-        : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80'
+        ? '/avatars/ravi-kumar.jpg'
+        : '/avatars/ananya-sharma.jpg'
       ),
       role: role,
       city: userData.city || 'Jaipur',
