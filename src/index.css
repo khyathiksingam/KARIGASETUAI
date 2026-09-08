@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --heritage-bg: #FAF7F0;
+    --heritage-terracotta: #C85A32;
+    --heritage-gold: #D4AF37;
+    --heritage-brown: #4A2E18;
+  }
+
+  body {
+    background-color: #FAF7F0;
+    color: #1A1817;
+    overflow-x: hidden;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, .font-serif-title {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-heritage-display {
+    font-family: 'Cinzel', 'Playfair Display', serif;
+  }
+}
+
+/* 3D Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1500 {
+  perspective: 1500px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Subtle 3D Card Hover Lift */
+.card-3d {
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card-3d:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.01);
+  box-shadow: 0 20px 30px -10px rgba(74, 46, 24, 0.18), 0 10px 15px -5px rgba(200, 90, 50, 0.12);
+}
+
+.card-3d-hero {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+/* Heritage Pattern Backgrounds */
+.bg-heritage-pattern {
+  background-color: #FAF7F0;
+  background-image: radial-gradient(#C85A32 0.75px, transparent 0.75px), radial-gradient(#D4AF37 0.75px, #FAF7F0 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-opacity: 0.05;
+}
+
+.bg-mandala-radial {
+  background: radial-gradient(circle at 50% 30%, rgba(245, 230, 163, 0.25) 0%, rgba(250, 247, 240, 0.95) 70%);
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.glass-panel-dark {
+  background: rgba(43, 23, 8, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Scanning Line for AI Analyzer */
+.scanning-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #D4AF37, #C85A32, #D4AF37, transparent);
+  box-shadow: 0 0 18px 4px rgba(212, 175, 55, 0.8), 0 0 8px 2px rgba(200, 90, 50, 0.9);
+  z-index: 20;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #B86F52;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A33C17;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card-3d:hover {
+    transform: none !important;
+  }
+}
