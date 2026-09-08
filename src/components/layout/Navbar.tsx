@@ -58,20 +58,22 @@ export const Navbar: React.FC = () => {
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-heritage-terracotta to-heritage-brown flex items-center justify-center shadow-3d-sm text-heritage-gold group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5 text-heritage-gold-light" />
-          </div>
+        <Link to="/" className="flex items-center space-x-2.5 group shrink-0">
+          <img
+            src="/karigasetu-logo.png"
+            alt="Karigasetu.ai Official Logo"
+            className="h-11 w-11 sm:h-12 sm:w-12 rounded-full object-contain shadow-xs border border-heritage-terracotta/25 group-hover:scale-105 transition-transform"
+          />
           <div>
             <div className="flex items-center space-x-1.5">
-              <span className="font-display font-black text-xl tracking-tight text-heritage-brown">
-                KARIGAR<span className="text-heritage-terracotta">SETU</span>
+              <span className="font-display font-black text-lg sm:text-xl tracking-tight text-heritage-brown">
+                KARIGA<span className="text-heritage-terracotta">SETU</span>
               </span>
-              <span className="bg-heritage-gold/20 text-heritage-brown border border-heritage-gold/40 text-[10px] font-bold px-1.5 py-0.5 rounded">
-                AI
+              <span className="bg-heritage-gold/20 text-heritage-brown border border-heritage-gold/40 text-[10px] font-bold px-1.5 py-0.2 rounded">
+                .AI
               </span>
             </div>
-            <p className="text-[10px] tracking-wide text-heritage-brown/70 font-medium -mt-0.5">
+            <p className="text-[10px] tracking-wide text-heritage-brown/75 font-medium -mt-0.5 hidden xs:block">
               From Artisan to Market — Powered by AI
             </p>
           </div>

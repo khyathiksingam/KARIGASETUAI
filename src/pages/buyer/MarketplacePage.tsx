@@ -98,8 +98,12 @@ export const MarketplacePage: React.FC = () => {
         {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-heritage-sand pb-4">
           <div>
-            <div className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-heritage-terracotta mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-heritage-terracotta mb-1">
+              <img 
+                src="/karigasetu-logo.png" 
+                alt="Karigasetu" 
+                className="w-4 h-4 rounded-full object-contain" 
+              />
               <span>Direct Artisan Marketplace</span>
             </div>
             <h1 className="font-display font-black text-2xl sm:text-3xl text-heritage-brown">

@@ -186,13 +186,20 @@ export const SignupPage: React.FC = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-xl bg-heritage-terracotta text-heritage-gold flex items-center justify-center shadow-md">
-              <Sparkles className="w-5 h-5 text-heritage-gold-light" />
+          <Link to="/" className="inline-flex items-center space-x-3 group">
+            <img 
+              src="/karigasetu-logo.png" 
+              alt="Karigasetu.ai Logo" 
+              className="h-12 w-12 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform" 
+            />
+            <div className="flex flex-col text-left">
+              <span className="font-display font-black text-2xl tracking-tight text-heritage-brown leading-none">
+                KARIGA<span className="text-heritage-terracotta">SETU</span>.AI
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-heritage-terracotta mt-0.5">
+                Heritage to Market • AI
+              </span>
             </div>
-            <span className="font-display font-black text-2xl text-heritage-brown">
-              KARIGAR<span className="text-heritage-terracotta">SETU</span> AI
-            </span>
           </Link>
           <h2 className="font-serif font-black text-2xl sm:text-3xl text-heritage-brown mt-3">
             Join the Artisan Movement

@@ -15,10 +15,28 @@ export const RoleSelectionPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-heritage-ivory bg-heritage-pattern flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto w-full text-center mb-10">
+        <div className="flex justify-center mb-5">
+          <Link to="/" className="inline-flex items-center space-x-3 group">
+            <img 
+              src="/karigasetu-logo.png" 
+              alt="Karigasetu.ai Logo" 
+              className="h-14 w-14 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform" 
+            />
+            <div className="flex flex-col text-left">
+              <span className="font-display font-black text-2xl tracking-tight text-heritage-brown leading-none">
+                KARIGA<span className="text-heritage-terracotta">SETU</span>.AI
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-heritage-terracotta mt-0.5">
+                Heritage to Market • AI
+              </span>
+            </div>
+          </Link>
+        </div>
+
         <div className="inline-flex items-center space-x-2 bg-heritage-sand px-3 py-1 rounded-full border border-heritage-gold/30 mb-3">
           <Sparkles className="w-3.5 h-3.5 text-heritage-terracotta" />
           <span className="text-xs font-bold text-heritage-brown uppercase tracking-wider">
-            Step 1 of 2: Mandatory Role Selection
+            Step 1 of 2: Role Selection
           </span>
         </div>
         <h1 className="font-display font-black text-3xl sm:text-4xl text-heritage-brown leading-tight">

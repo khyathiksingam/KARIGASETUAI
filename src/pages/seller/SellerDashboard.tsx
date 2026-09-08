@@ -109,8 +109,12 @@ export const SellerDashboard: React.FC = () => {
               />
             </div>
             <div>
-              <div className="inline-flex items-center space-x-1.5 bg-heritage-gold/20 text-heritage-gold-light px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1">
-                <Sparkles className="w-3.5 h-3.5 text-heritage-gold" />
+              <div className="inline-flex items-center space-x-2 bg-heritage-gold/20 text-heritage-gold-light px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-1.5 border border-heritage-gold/30">
+                <img 
+                  src="/karigasetu-logo.png" 
+                  alt="Karigasetu" 
+                  className="w-4 h-4 rounded-full object-contain" 
+                />
                 <span>Verified Artisan &bull; {currentUser?.badge}</span>
               </div>
               <h1 className="font-display font-black text-2xl sm:text-3xl text-white">

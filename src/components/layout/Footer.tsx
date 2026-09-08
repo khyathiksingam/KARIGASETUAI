@@ -10,11 +10,13 @@ export const Footer: React.FC = () => {
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-heritage-terracotta to-heritage-gold flex items-center justify-center text-heritage-brown-dark shadow-md font-bold">
-                <Sparkles className="w-5 h-5 text-heritage-brown-dark" />
-              </div>
+              <img
+                src="/karigasetu-logo.png"
+                alt="Karigasetu.ai Logo"
+                className="w-12 h-12 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 shrink-0"
+              />
               <span className="font-display font-black text-2xl tracking-tight text-heritage-gold">
-                KARIGAR<span className="text-heritage-terracotta-light">SETU</span> AI
+                KARIGA<span className="text-heritage-terracotta-light">SETU</span>.AI
               </span>
             </div>
             <p className="text-heritage-gold-light text-sm font-serif italic">

@@ -8,15 +8,14 @@ export interface AnalysisProgressStep {
 }
 
 export const SCAN_STEPS: AnalysisProgressStep[] = [
-  { id: 1, label: 'Uploading image...', detail: 'Preparing high-resolution neural vision buffer' },
-  { id: 2, label: 'Detecting product...', detail: 'Classifying traditional handicraft structure, motifs & geometry' },
-  { id: 3, label: 'Identifying material...', detail: 'Spectro-texture detection of wood, clay, stone, metal & fibers' },
-  { id: 4, label: 'Analyzing craft style...', detail: 'Recognizing regional Indian artisan lineage & school of art' },
-  { id: 5, label: 'Detecting colors...', detail: 'Extracting primary pigments & natural vegetable/mineral dyes' },
-  { id: 6, label: 'Estimating dimensions...', detail: 'Calibrating spatial perspective & volumetric proportions' },
-  { id: 7, label: 'Evaluating quality...', detail: 'Scoring edge symmetry, intricate detailing & surface finish' },
-  { id: 8, label: 'Estimating market price...', detail: 'Benchmarking raw craft labor and fair trade market rates' },
-  { id: 9, label: 'Analysis complete', detail: 'Finalizing structured marketplace catalog payload' },
+  { id: 1, label: 'UPLOADING IMAGE', detail: 'Preparing high-resolution neural vision buffer' },
+  { id: 2, label: 'IDENTIFYING CRAFT', detail: 'Classifying traditional handicraft structure, motifs & geometry' },
+  { id: 3, label: 'ANALYZING MATERIAL', detail: 'Spectro-texture detection of wood, clay, stone, metal & fibers' },
+  { id: 4, label: 'ANALYZING CRAFT STYLE', detail: 'Recognizing regional Indian artisan lineage & school of art' },
+  { id: 5, label: 'ESTIMATING DIMENSIONS', detail: 'Calibrating spatial perspective & volumetric proportions' },
+  { id: 6, label: 'ASSESSING QUALITY', detail: 'Scoring edge symmetry, intricate detailing & surface finish' },
+  { id: 7, label: 'CALCULATING FAIR PRICE', detail: 'Benchmarking raw craft labor and fair trade market rates' },
+  { id: 8, label: 'ANALYSIS COMPLETE', detail: 'Finalizing structured marketplace catalog payload' },
 ];
 
 function loadImageElement(src: string): Promise<HTMLImageElement> {
