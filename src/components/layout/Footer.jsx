@@ -29,7 +29,7 @@ export const Footer = () => {
               </span>
               <span className="inline-flex items-center text-[11px] bg-heritage-terracotta/30 text-heritage-sand border border-heritage-terracotta/50 px-3 py-1 rounded-full">
                 <Shield className="w-3.5 h-3.5 mr-1.5"/>
-                ONDC & GI Aligned
+                ONDC & AI Aligned
               </span>
             </div>
           </div>

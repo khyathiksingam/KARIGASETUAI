@@ -9,7 +9,7 @@ export const DEMO_SELLERS = [
         role: 'seller',
         city: 'Warangal',
         state: 'Telangana',
-        bio: 'Third-generation wood sculptor from Warangal. Specializing in sacred temple carvings, teakwood deities, and heritage architectural motifs with GI recognition.',
+        bio: 'Third-generation wood sculptor from Warangal. Specializing in sacred temple carvings, teakwood deities, and heritage architectural motifs with AI recognition.',
         craft_specialization: 'Traditional Wood Carving & Sculpting',
         bank_details: {
             account_holder_name: 'Ravi Kumar',

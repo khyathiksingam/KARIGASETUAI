@@ -117,7 +117,7 @@ export const LandingPage = () => {
                 Smart Pricing
               </h3>
               <p className="text-sm text-heritage-charcoal/70 leading-relaxed mb-4">
-                Estimate an appropriate market price based on raw material indices, crafting time, regional GI factors, and fair living wage standards for artisans.
+                Estimate an appropriate market price based on raw material indices, crafting time, regional craft factors, and fair living wage standards for artisans.
               </p>
               <span className="text-xs font-semibold text-heritage-gold-dark">
                 Fair Trade Algorithm Included

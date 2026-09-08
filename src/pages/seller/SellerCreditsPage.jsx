@@ -9,7 +9,7 @@ export const SellerCreditsPage = () => {
         { name: 'New Artisan', min: 0, max: 499, perk: 'Basic listing privileges & automated AI product appraisal.' },
         { name: 'Rising Karigar', min: 500, max: 999, perk: 'Marketplace featured search placement & buyer direct chat.' },
         { name: 'Trusted Artisan', min: 1000, max: 1599, perk: 'Gold badge on all cards, priority AI pricing index, and ONDC export linkage.' },
-        { name: 'Master Karigar', min: 1600, max: 2500, perk: 'GI recognition flag, national exhibition invites, and zero transaction fee threshold.' },
+        { name: 'Master Karigar', min: 1600, max: 2500, perk: 'AI Recognition flag, national exhibition invites, and zero transaction fee threshold.' },
     ];
     return (<div className="min-h-screen bg-heritage-ivory py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">

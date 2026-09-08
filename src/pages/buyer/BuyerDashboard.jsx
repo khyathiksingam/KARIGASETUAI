@@ -83,7 +83,7 @@ export const BuyerDashboard = () => {
                 Recommended For You
               </h2>
               <p className="text-xs text-heritage-charcoal/60">
-                Direct from national awardee artisans and registered GI craft clusters.
+                Direct from national awardee artisans and AI-Recognized artisan craft clusters.
               </p>
             </div>
             <Link to="/marketplace" className="text-xs font-bold text-heritage-terracotta hover:underline">

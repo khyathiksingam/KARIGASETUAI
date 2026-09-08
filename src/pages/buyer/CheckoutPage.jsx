@@ -420,7 +420,7 @@ export const CheckoutPage = () => {
                         <span>Cash on Delivery Available</span>
                       </p>
                       <p className="text-[11px] text-amber-800 leading-relaxed">
-                        Pay cash upon delivery. Each consignment arrives in tamper-evident heritage packaging with a GI verification tag and artisan wax seal.
+                        Pay cash upon delivery. Each consignment arrives in tamper-evident heritage packaging with an AI verification tag and artisan wax seal.
                       </p>
                     </div>)}
                 </div>

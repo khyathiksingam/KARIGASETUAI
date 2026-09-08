@@ -27,7 +27,7 @@ export const SellerProfilePage = () => {
     // Profile fields
     const [fullName, setFullName] = useState(currentUser?.full_name || 'Ravi Kumar');
     const [bio, setBio] = useState(currentUser?.bio ||
-        'Third-generation wood sculptor from Warangal. Specializing in sacred temple carvings, teakwood deities, and heritage architectural motifs with GI recognition.');
+        'Third-generation wood sculptor from Warangal. Specializing in sacred temple carvings, teakwood deities, and heritage architectural motifs with AI recognition.');
     const [craft, setCraft] = useState(currentUser?.craft_specialization || 'Traditional Wood Carving & Sculpting');
     const [city, setCity] = useState(currentUser?.city || 'Warangal');
     const [state, setState] = useState(currentUser?.state || 'Telangana');
