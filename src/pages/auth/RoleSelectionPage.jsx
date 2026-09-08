@@ -13,13 +13,13 @@ export const RoleSelectionPage = () => {
       <div className="max-w-2xl mx-auto w-full text-center mb-10">
         <div className="flex justify-center mb-5">
           <Link to="/" className="inline-flex items-center space-x-3 group">
-            <img src="/karigasetu-logo.png" alt="Karigasetu.ai Logo" className="h-14 w-14 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform"/>
+            <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="h-16 w-16 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform"/>
             <div className="flex flex-col text-left">
-              <span className="font-display font-black text-2xl tracking-tight text-heritage-brown leading-none">
-                KARIGA<span className="text-heritage-terracotta">SETU</span>.AI
+              <span className="font-display font-black text-2xl tracking-wider text-heritage-brown leading-none">
+                KARIGARSETU.AI
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-heritage-terracotta mt-0.5">
-                Heritage to Market • AI
+              <span className="text-[10px] font-bold uppercase tracking-wider text-heritage-terracotta mt-1">
+                From Artisan to Market — Powered by AI
               </span>
             </div>
           </Link>
@@ -33,7 +33,7 @@ export const RoleSelectionPage = () => {
         </div>
         <h1 className="font-display font-black text-3xl sm:text-4xl text-heritage-brown leading-tight">
           How do you want to join <br />
-          <span className="text-heritage-terracotta">KARIGARSETU AI</span>?
+          <span className="text-heritage-terracotta">KARIGARSETU.AI</span>?
         </h1>
         <p className="text-sm text-heritage-charcoal/70 mt-2 font-medium">
           Choose how you will participate in India's premier AI-powered handicraft ecosystem.
@@ -154,7 +154,7 @@ export const RoleSelectionPage = () => {
         </button>
 
         <p className="text-xs text-heritage-charcoal/70 font-medium">
-          Already have a KarigarSetu account?{' '}
+          Already have a KARIGARSETU.AI account?{' '}
           <Link to="/login" className="font-bold text-heritage-terracotta hover:underline">
             Log In Here
           </Link>

@@ -35,7 +35,7 @@ export const SellerDashboard = () => {
         {photoUpdatedToast && (<div className="p-3 bg-emerald-700 text-white rounded-2xl flex items-center justify-between text-xs font-bold shadow-lg animate-fade-in">
             <div className="flex items-center space-x-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-300"/>
-              <span>Artisan Profile Photo Updated Successfully! Reflected across KarigarSetu AI.</span>
+              <span>Artisan Profile Photo Updated Successfully! Reflected across KARIGARSETU.AI.</span>
             </div>
             <button onClick={() => setPhotoUpdatedToast(false)} className="text-emerald-200 hover:text-white">&times;</button>
           </div>)}
@@ -56,7 +56,7 @@ export const SellerDashboard = () => {
             </div>
             <div>
               <div className="inline-flex items-center space-x-2 bg-heritage-gold/20 text-heritage-gold-light px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-1.5 border border-heritage-gold/30">
-                <img src="/karigasetu-logo.png" alt="Karigasetu" className="w-4 h-4 rounded-full object-contain"/>
+                <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI" className="w-5 h-5 rounded-full object-contain"/>
                 <span>Verified Artisan &bull; {currentUser?.badge}</span>
               </div>
               <h1 className="font-display font-black text-2xl sm:text-3xl text-white">

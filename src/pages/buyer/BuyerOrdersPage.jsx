@@ -164,7 +164,7 @@ export const BuyerOrdersPage = () => {
                 Review: {selectedProductName}
               </h3>
               <p className="text-xs text-heritage-charcoal/70">
-                Your rating directly honors the artisan and contributes +25 KarigarSetu Credits toward their reputation tier.
+                Your rating directly honors the artisan and contributes +25 KARIGARSETU.AI Credits toward their reputation tier.
               </p>
 
               {reviewSubmitted ? (<div className="p-4 bg-emerald-100 rounded-2xl border border-emerald-300 text-emerald-900 text-xs font-bold text-center">

@@ -226,7 +226,7 @@ export async function detectHumanSubject(imageSource) {
                     return {
                         isHuman: true,
                         confidence: 99,
-                        reason: 'Human face recognized via neural vision detector. KarigarSetu AI only appraises authentic Indian handicrafts and handloom textiles.',
+                        reason: 'Human face recognized via neural vision detector. KARIGARSETU.AI only appraises authentic Indian handicrafts and handloom textiles.',
                     };
                 }
             }
@@ -314,7 +314,7 @@ export async function detectHumanSubject(imageSource) {
             return {
                 isHuman: true,
                 confidence: 96,
-                reason: 'Human portrait / selfie photo detected. KarigarSetu AI only evaluates authentic Indian handicrafts, woodcraft, pottery, handlooms, and traditional art.',
+                reason: 'Human portrait / selfie photo detected. KARIGARSETU.AI only evaluates authentic Indian handicrafts, woodcraft, pottery, handlooms, and traditional art.',
             };
         }
         return { isHuman: false, confidence: 0 };
@@ -345,14 +345,14 @@ export async function detectDocumentSubject(imageSource) {
             return {
                 isDocument: true,
                 confidence: 99,
-                reason: 'Text Document (.docx / .pdf / .txt) detected. KarigarSetu AI exclusively evaluates authentic Indian physical handicrafts, textiles, pottery, and art.',
+                reason: 'Text Document (.docx / .pdf / .txt) detected. KARIGARSETU.AI exclusively evaluates authentic Indian physical handicrafts, textiles, pottery, and art.',
             };
         }
         if (docKeywords.some(kw => lowerName.includes(kw))) {
             return {
                 isDocument: true,
                 confidence: 98,
-                reason: 'Text Document / Syllabus file detected. KarigarSetu AI exclusively evaluates authentic Indian physical handicrafts, textiles, pottery, and art.',
+                reason: 'Text Document / Syllabus file detected. KARIGARSETU.AI exclusively evaluates authentic Indian physical handicrafts, textiles, pottery, and art.',
             };
         }
     }
@@ -413,7 +413,7 @@ export async function detectDocumentSubject(imageSource) {
             return {
                 isDocument: true,
                 confidence: 98,
-                reason: 'Text Document / Syllabus / Printed Sheet Detected. KarigarSetu AI exclusively evaluates authentic handmade physical crafts, textiles, pottery, and traditional art — not text documents, books, or notes.',
+                reason: 'Text Document / Syllabus / Printed Sheet Detected. KARIGARSETU.AI exclusively evaluates authentic handmade physical crafts, textiles, pottery, and traditional art — not text documents, books, or notes.',
             };
         }
         return { isDocument: false, confidence: 0 };
@@ -460,12 +460,12 @@ export async function analyzeProductImage(imageSource, onStepProgress) {
                 estimatedPriceMax: 0,
                 suggestedPrice: 0,
                 confidence: docCheck.confidence || 98,
-                descriptionSnippet: 'Text document, syllabus page, or assignment notes detected. KarigarSetu AI exclusively evaluates physical handmade crafts, handlooms, and heritage artisan goods.',
+                descriptionSnippet: 'Text document, syllabus page, or assignment notes detected. KARIGARSETU.AI exclusively evaluates physical handmade crafts, handlooms, and heritage artisan goods.',
                 culturalSignificance: 'Under SIH 2026 guidelines, printed documents or digital text sheets cannot be appraised or cataloged as marketplace products.',
                 isValidCraft: false,
                 isHumanSubject: false,
                 isDocumentSubject: true,
-                rejectionReason: docCheck.reason || 'Text Document / Syllabus page detected. KarigarSetu AI only evaluates authentic Indian physical handicrafts.',
+                rejectionReason: docCheck.reason || 'Text Document / Syllabus page detected. KARIGARSETU.AI only evaluates authentic Indian physical handicrafts.',
             },
             isMock: true,
         };
@@ -493,12 +493,12 @@ export async function analyzeProductImage(imageSource, onStepProgress) {
                 estimatedPriceMax: 0,
                 suggestedPrice: 0,
                 confidence: humanCheck.confidence || 96,
-                descriptionSnippet: 'Human subject or portrait photography detected. KarigarSetu AI is exclusively specialized for traditional Indian handicrafts, woodwork, terracotta, handlooms, metalware, and folk art.',
+                descriptionSnippet: 'Human subject or portrait photography detected. KARIGARSETU.AI is exclusively specialized for traditional Indian handicrafts, woodwork, terracotta, handlooms, metalware, and folk art.',
                 culturalSignificance: 'Under SIH 2026 ethical guidelines, living persons cannot be cataloged or sold as products.',
                 isValidCraft: false,
                 isHumanSubject: true,
                 isDocumentSubject: false,
-                rejectionReason: humanCheck.reason || 'Human portrait / person detected. KarigarSetu AI only evaluates authentic Indian handicrafts.',
+                rejectionReason: humanCheck.reason || 'Human portrait / person detected. KARIGARSETU.AI only evaluates authentic Indian handicrafts.',
             },
             isMock: true,
         };
@@ -1206,8 +1206,8 @@ async function callGeminiVision(imageSource, apiKey) {
     }
     const prompt = `You are the master AI handicraft appraiser for KARIGARSETU AI (Smart India Hackathon 2026).
 First inspect this image for subject validity:
-- If this image is of a living human being, selfie, personal portrait, or face, you MUST set "isValidCraft": false, "isHumanSubject": true, "isDocumentSubject": false, and "rejectionReason": "Human portrait / selfie detected. KarigarSetu AI only appraises genuine handmade craft items."
-- If this image is of a text document, paper sheet, syllabus, book page, assignment, PDF/Word document (.docx), or printed notes, you MUST set "isValidCraft": false, "isHumanSubject": false, "isDocumentSubject": true, and "rejectionReason": "Text document / syllabus page detected. KarigarSetu AI exclusively evaluates physical handmade crafts, not text documents."
+- If this image is of a living human being, selfie, personal portrait, or face, you MUST set "isValidCraft": false, "isHumanSubject": true, "isDocumentSubject": false, and "rejectionReason": "Human portrait / selfie detected. KARIGARSETU.AI only appraises genuine handmade craft items."
+- If this image is of a text document, paper sheet, syllabus, book page, assignment, PDF/Word document (.docx), or printed notes, you MUST set "isValidCraft": false, "isHumanSubject": false, "isDocumentSubject": true, and "rejectionReason": "Text document / syllabus page detected. KARIGARSETU.AI exclusively evaluates physical handmade crafts, not text documents."
 - If this is a valid Indian craft (wood carving, terracotta, pottery, handloom, brass, bamboo, jute/fiber, etc.), set "isValidCraft": true, "isHumanSubject": false, and "isDocumentSubject": false.
 
 Return ONLY a valid JSON object matching this schema:

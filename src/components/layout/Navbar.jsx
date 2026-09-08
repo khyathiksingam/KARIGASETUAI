@@ -30,18 +30,13 @@ export const Navbar = () => {
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center space-x-2.5 group shrink-0">
-          <img src="/karigasetu-logo.png" alt="Karigasetu.ai Official Logo" className="h-11 w-11 sm:h-12 sm:w-12 rounded-full object-contain shadow-xs border border-heritage-terracotta/25 group-hover:scale-105 transition-transform"/>
-          <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="font-display font-black text-lg sm:text-xl tracking-tight text-heritage-brown">
-                KARIGA<span className="text-heritage-terracotta">SETU</span>
-              </span>
-              <span className="bg-heritage-gold/20 text-heritage-brown border border-heritage-gold/40 text-[10px] font-bold px-1.5 py-0.2 rounded">
-                .AI
-              </span>
-            </div>
-            <p className="text-[10px] tracking-wide text-heritage-brown/75 font-medium -mt-0.5 hidden xs:block">
+        <Link to="/" className="flex items-center space-x-3 group shrink-0">
+          <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain shadow-xs border border-heritage-terracotta/25 group-hover:scale-105 transition-transform shrink-0"/>
+          <div className="flex flex-col text-left">
+            <span className="font-display font-black text-lg sm:text-xl tracking-wider text-heritage-brown leading-tight">
+              KARIGARSETU.AI
+            </span>
+            <p className="text-[9.5px] sm:text-[10px] tracking-wider text-heritage-brown/80 font-medium -mt-0.5 hidden xs:block">
               From Artisan to Market — Powered by AI
             </p>
           </div>

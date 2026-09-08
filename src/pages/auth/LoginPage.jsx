@@ -144,13 +144,13 @@ export const LoginPage = () => {
         {/* Brand Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-3 group">
-            <img src="/karigasetu-logo.png" alt="Karigasetu.ai Logo" className="h-12 w-12 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform"/>
+            <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="h-14 w-14 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 group-hover:scale-105 transition-transform"/>
             <div className="flex flex-col text-left">
-              <span className="font-display font-black text-2xl tracking-tight text-heritage-brown leading-none">
-                KARIGA<span className="text-heritage-terracotta">SETU</span>.AI
+              <span className="font-display font-black text-2xl tracking-wider text-heritage-brown leading-none">
+                KARIGARSETU.AI
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-heritage-terracotta mt-0.5">
-                Heritage to Market • AI
+              <span className="text-[10px] font-bold uppercase tracking-wider text-heritage-terracotta mt-1">
+                From Artisan to Market — Powered by AI
               </span>
             </div>
           </Link>
@@ -433,7 +433,7 @@ export const LoginPage = () => {
 
         {/* Footer Link */}
         <p className="text-center text-xs text-heritage-charcoal/70 font-medium mt-6">
-          New to KARIGARSETU AI?{' '}
+          New to KARIGARSETU.AI?{' '}
           <Link to="/select-role" className="font-bold text-heritage-terracotta hover:underline">
             Choose Role & Join
           </Link>

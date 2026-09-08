@@ -44,7 +44,7 @@ export const SettingsPage = () => {
                 Reset Demo Data (Factory Reset)
               </h2>
               <p className="text-xs text-heritage-charcoal/70 mt-1 max-w-lg">
-                Cleans `localStorage` and restores 6 master artisans, 20+ realistic products, clean order pipelines, and default KarigarSetu Credit balances.
+                Cleans `localStorage` and restores 6 master artisans, 20+ realistic products, clean order pipelines, and default KARIGARSETU.AI Credit balances.
               </p>
             </div>
             <button type="button" onClick={handleReset} className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md transition flex items-center space-x-2">

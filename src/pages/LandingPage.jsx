@@ -20,10 +20,10 @@ export const LandingPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Hero Content */}
             <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center space-x-2 bg-heritage-sand/80 border border-heritage-gold/40 px-3.5 py-1.5 rounded-full shadow-sm">
-                <Sparkles className="w-4 h-4 text-heritage-terracotta animate-pulse"/>
+              <div className="inline-flex items-center space-x-2.5 bg-heritage-sand/80 border border-heritage-gold/40 px-3.5 py-1.5 rounded-full shadow-sm">
+                <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="w-6 h-6 rounded-full object-contain shrink-0"/>
                 <span className="text-xs font-bold text-heritage-brown uppercase tracking-wider">
-                  Smart India Hackathon 2026 &bull; Heritage & Culture
+                  KARIGARSETU.AI &bull; Smart India Hackathon 2026
                 </span>
               </div>
 
@@ -199,7 +199,7 @@ export const LandingPage = () => {
               Seamless Ecosystem
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-black text-heritage-brown mt-2">
-              How KarigarSetu AI Works
+              How KARIGARSETU.AI Works
             </h2>
             <p className="text-sm sm:text-base text-heritage-charcoal/70 mt-3 font-medium">
               A transparent, two-sided pipeline linking uncatalogued rural creations with discerning urban connoisseurs.
@@ -320,7 +320,7 @@ export const LandingPage = () => {
               Meet India's Master Artisans
             </h2>
             <p className="text-xs sm:text-sm text-heritage-charcoal/70 mt-2 font-medium">
-              Every purchase on KarigarSetu AI directly sustains regional craft clusters and families.
+              Every purchase on KARIGARSETU.AI directly sustains regional craft clusters and families.
             </p>
           </div>
 

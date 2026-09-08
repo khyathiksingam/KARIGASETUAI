@@ -66,7 +66,7 @@ export const OtpNotificationBanner = () => {
                 Sent to <span className="font-bold text-white font-mono bg-white/10 px-1.5 py-0.5 rounded">{activeNotification.target}</span>:
               </p>
               <p className="text-xs text-heritage-sand/90 mt-1 leading-relaxed">
-                Your KarigarSetu AI security passcode is:
+                Your KARIGARSETU.AI security passcode is:
               </p>
             </div>
             <div className="bg-white/10 border border-heritage-gold/50 rounded-xl px-3 py-1.5 text-center shrink-0">

@@ -137,7 +137,7 @@ export const CartPage = () => {
 
               <div className="pt-2 text-[10px] text-heritage-charcoal/60 space-y-1 text-center">
                 <p>100% Secure Demo Payment &bull; Instant Artisan Dispatch</p>
-                <p>Protected by KarigarSetu Authenticity Guarantee</p>
+                <p>Protected by KARIGARSETU.AI Authenticity Guarantee</p>
               </div>
             </div>
           </div>)}

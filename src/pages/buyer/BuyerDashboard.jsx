@@ -23,7 +23,7 @@ export const BuyerDashboard = () => {
         <div className="bg-gradient-to-r from-heritage-brown via-heritage-brown-dark to-heritage-terracotta text-white rounded-3xl p-8 sm:p-12 shadow-3d-lg border-2 border-heritage-gold/40 text-center relative overflow-hidden">
           <div className="max-w-3xl mx-auto space-y-4 relative z-10">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-heritage-gold/20 text-heritage-gold-light border border-heritage-gold/30 text-xs font-bold uppercase tracking-wider">
-              <img src="/karigasetu-logo.png" alt="Karigasetu" className="w-4 h-4 rounded-full object-contain"/>
+              <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI" className="w-5 h-5 rounded-full object-contain"/>
               <span>Welcome, {currentUser?.full_name || 'Ananya Sharma'}</span>
             </div>
 

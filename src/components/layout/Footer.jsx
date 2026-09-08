@@ -8,9 +8,9 @@ export const Footer = () => {
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center space-x-3">
-              <img src="/karigasetu-logo.png" alt="Karigasetu.ai Logo" className="w-12 h-12 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 shrink-0"/>
-              <span className="font-display font-black text-2xl tracking-tight text-heritage-gold">
-                KARIGA<span className="text-heritage-terracotta-light">SETU</span>.AI
+              <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="w-14 h-14 rounded-full object-contain shadow-md border-2 border-heritage-gold/50 shrink-0"/>
+              <span className="font-display font-black text-2xl tracking-wider text-heritage-gold">
+                KARIGARSETU.AI
               </span>
             </div>
             <p className="text-heritage-gold-light text-sm font-serif italic">
@@ -85,7 +85,7 @@ export const Footer = () => {
             </h4>
             <div className="text-xs text-heritage-sand/75 space-y-2">
               <p>
-                <strong className="text-white">Stack:</strong> React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts, Supabase.
+                <strong className="text-white">Stack:</strong> React 18, JavaScript (JSX), Vite, Tailwind CSS, Framer Motion, Recharts, Supabase.
               </p>
               <p>
                 <strong className="text-white">Model:</strong> Gemini Vision API with resilient local heuristic fallback.
@@ -99,7 +99,7 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-heritage-sand/60">
-          <p>© 2026 KARIGARSETU AI &bull; Built with pride for Smart India Hackathon 2026.</p>
+          <p>© 2026 KARIGARSETU.AI &bull; Built with pride for Smart India Hackathon 2026.</p>
           <div className="flex items-center space-x-4 mt-4 sm:mt-0">
             <span className="flex items-center text-heritage-gold-light">
               Crafted with <Heart className="w-3.5 h-3.5 text-heritage-terracotta fill-heritage-terracotta mx-1"/> for India's Heritage

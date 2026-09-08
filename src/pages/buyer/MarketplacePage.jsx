@@ -78,14 +78,14 @@ export const MarketplacePage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-heritage-sand pb-4">
           <div>
             <div className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-heritage-terracotta mb-1">
-              <img src="/karigasetu-logo.png" alt="Karigasetu" className="w-4 h-4 rounded-full object-contain"/>
+              <img src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI" className="w-5 h-5 rounded-full object-contain"/>
               <span>Direct Artisan Marketplace</span>
             </div>
             <h1 className="font-display font-black text-2xl sm:text-3xl text-heritage-brown">
               Handcrafted Treasures of India
             </h1>
             <p className="text-xs text-heritage-charcoal/70 mt-0.5">
-              Showing {filteredProducts.length} authentic listings certified by KarigarSetu AI.
+              Showing {filteredProducts.length} authentic listings certified by KARIGARSETU.AI.
             </p>
           </div>
 

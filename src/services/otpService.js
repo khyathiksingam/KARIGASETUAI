@@ -1,5 +1,5 @@
 /**
- * KarigarSetu AI - OTP Dispatch & Notification Service
+ * KARIGARSETU.AI - OTP Dispatch & Notification Service
  * Simulates real SMS (Fast2SMS / Gov CDAC Gateway) and Email (SendGrid / Gov NIC Mail)
  * delivery with sound chimes, browser desktop notifications, and floating in-app push alerts.
  */
@@ -61,7 +61,7 @@ class OtpService {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const provider = type === 'mobile'
             ? 'Gov CDAC / Fast2SMS National Gateway'
-            : 'KarigarSetu Secure Mail Server';
+            : 'KARIGARSETU.AI Secure Mail Server';
         const event = {
             id: `otp_${Date.now()}`,
             type,
@@ -76,7 +76,7 @@ class OtpService {
         // 2. Trigger browser notification if permitted
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
-                new Notification(type === 'mobile' ? '💬 SMS: KARIGARSETU AI' : '✉️ Email: KARIGARSETU AI', {
+                new Notification(type === 'mobile' ? '💬 SMS: KARIGARSETU.AI' : '✉️ Email: KARIGARSETU.AI', {
                     body: `Your OTP verification code is ${otp}. Valid for 10 minutes. Do not share.`,
                     icon: '/favicon.ico',
                 });

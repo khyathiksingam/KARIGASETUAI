@@ -41,6 +41,11 @@ export const App = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />}/>
+              <Route path="/home" element={<LandingPage />}/>
+              <Route path="/how-it-works" element={<LandingPage />}/>
+              <Route path="/ai-analyzer" element={<RoleGuard allowedRole="seller"><AIProductAnalyzerPage /></RoleGuard>}/>
+              <Route path="/seller" element={<Navigate to="/seller/dashboard" replace/>}/>
+              <Route path="/buyer" element={<Navigate to="/buyer/dashboard" replace/>}/>
               <Route path="/select-role" element={<RoleSelectionPage />}/>
               <Route path="/login" element={<LoginPage />}/>
               <Route path="/signup" element={<SignupPage />}/>

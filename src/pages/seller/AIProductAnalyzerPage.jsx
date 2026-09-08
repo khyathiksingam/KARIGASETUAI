@@ -261,7 +261,7 @@ export const AIProductAnalyzerPage = () => {
 
     const newProd = addProduct({
       name: analysisResult.productName || 'Handcrafted Heritage Item',
-      description: `${analysisResult.descriptionSnippet || analysisResult.visualDescription || 'Authentic handmade Indian craft.'} Traditional ${analysisResult.craftType || analysisResult.category || 'Artisan Form'} handcrafted in ${analysisResult.regionState || currentUser?.state || 'India'}. Evaluated by KarigarSetu AI vision with a quality benchmark of ${analysisResult.qualityScore || 4.8}/5.`,
+      description: `${analysisResult.descriptionSnippet || analysisResult.visualDescription || 'Authentic handmade Indian craft.'} Traditional ${analysisResult.craftType || analysisResult.category || 'Artisan Form'} handcrafted in ${analysisResult.regionState || currentUser?.state || 'India'}. Evaluated by KARIGARSETU.AI vision with a quality benchmark of ${analysisResult.qualityScore || 4.8}/5.`,
       category: analysisResult.category || 'Handicraft',
       material: analysisResult.material || 'Natural Materials',
       model_style: analysisResult.craftType || analysisResult.model || 'Traditional Craft',
@@ -352,17 +352,15 @@ export const AIProductAnalyzerPage = () => {
         <div className="bg-gradient-to-r from-heritage-brown via-heritage-brown-dark to-heritage-terracotta text-white rounded-3xl p-6 sm:p-8 shadow-3d-lg border-2 border-heritage-gold/40 flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="flex items-start sm:items-center space-x-4">
             <img
-              src="/karigasetu-logo.png"
-              alt="Karigasetu.ai Logo"
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-contain bg-white/10 p-1 border-2 border-heritage-gold/60 shadow-md shrink-0"
+              src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI Official Logo" className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-contain bg-white/10 p-0.5 border-2 border-heritage-gold/60 shadow-md shrink-0"
             />
             <div>
               <div className="inline-flex items-center space-x-1.5 bg-heritage-gold/20 text-heritage-gold-light px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-heritage-gold" aria-hidden="true" />
-                <span>AI Vision & Smart Valuation</span>
+                <span>KARIGARSETU.AI Vision & Smart Valuation</span>
               </div>
               <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-white">
-                AI Product Analyzer & Smart Appraiser
+                KARIGARSETU.AI Product Analyzer & Smart Appraiser
               </h1>
               <p className="text-xs sm:text-sm text-heritage-sand/90 mt-1 max-w-2xl font-normal leading-relaxed">
                 Upload a photograph of your handicraft and let AI identify the craft, analyze materials, assess quality and suggest a fair market price.
@@ -745,7 +743,7 @@ export const AIProductAnalyzerPage = () => {
                           {analysisResult.rejectionReason || 'Please upload an authentic handmade physical craft item.'}
                         </p>
                         <p className="text-[11px] text-rose-800/80 leading-relaxed">
-                          Under Smart India Hackathon 2026 & Ministry of Textiles guidelines, KarigarSetu AI exclusively evaluates genuine handmade crafts (woodwork, pottery, handlooms, brass metalware, cane/bamboo, jute work, and traditional folk art).
+                          Under Smart India Hackathon 2026 & Ministry of Textiles guidelines, KARIGARSETU.AI exclusively evaluates genuine handmade crafts (woodwork, pottery, handlooms, brass metalware, cane/bamboo, jute work, and traditional folk art).
                         </p>
                       </div>
                     </div>
@@ -782,9 +780,7 @@ export const AIProductAnalyzerPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-heritage-sand/80 pb-4">
                     <div className="flex items-center space-x-3">
                       <img
-                        src="/karigasetu-logo.png"
-                        alt="Karigasetu"
-                        className="w-11 h-11 rounded-full object-contain border border-heritage-gold/50 shadow-xs"
+                        src="/assets/karigarsetu-ai-logo.png" alt="KARIGARSETU.AI" className="w-12 h-12 rounded-full object-contain border border-heritage-gold/50 shadow-xs"
                       />
                       <div>
                         <span className="text-[10px] font-black uppercase tracking-wider text-heritage-terracotta">

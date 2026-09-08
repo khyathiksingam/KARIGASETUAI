@@ -35,7 +35,7 @@ export const SellerCreditsPage = () => {
             <span className="text-3xl font-black font-serif text-heritage-gold-light">
               {(currentUser?.credits || 1250).toLocaleString('en-IN')}
             </span>
-            <span className="text-[10px] text-white/70 block mt-0.5">KARIGARSETU CREDITS</span>
+            <span className="text-[10px] text-white/70 block mt-0.5">KARIGARSETU.AI CREDITS</span>
           </div>
         </div>
 
@@ -52,7 +52,7 @@ export const SellerCreditsPage = () => {
             <div className="mt-8 w-full p-4 bg-heritage-sand/30 rounded-2xl border border-heritage-sand text-xs space-y-2 text-heritage-charcoal/80">
               <div className="flex items-center space-x-2 text-heritage-brown font-bold">
                 <Info className="w-4 h-4 text-heritage-terracotta shrink-0"/>
-                <span>What are KarigarSetu Credits?</span>
+                <span>What are KARIGARSETU.AI Credits?</span>
               </div>
               <p className="text-[11px] leading-relaxed text-heritage-charcoal/70">
                 Credits represent verified artisan credibility and craft activity on the platform. They unlock higher seller tier badges, priority search ranking, and wholesale B2B buyer inquiries. Credits do not represent real fiat currency.
