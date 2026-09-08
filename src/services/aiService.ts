@@ -8,14 +8,15 @@ export interface AnalysisProgressStep {
 }
 
 export const SCAN_STEPS: AnalysisProgressStep[] = [
-  { id: 1, label: 'Verifying Subject Authenticity...', detail: 'Neural scan checking for authentic craft vs living person / selfie' },
-  { id: 2, label: 'Detecting Craft Silhouette & Form...', detail: 'Classifying traditional handicraft structure, timber grain & motifs' },
-  { id: 3, label: 'Identifying Craft Material...', detail: 'Spectro-texture detection of wood grain, river clay, brass & handloom warp' },
-  { id: 4, label: 'Analyzing Color Spectra...', detail: 'Extracting primary pigments & natural vegetable/mineral dyes' },
-  { id: 5, label: 'Estimating 3D Perspective Dimensions...', detail: 'Calibrating spatial depth ratios & volumetric proportions' },
-  { id: 6, label: 'Evaluating Craftsmanship & Finish...', detail: 'Scoring edge symmetry, jali undercut complexity, and surface finish' },
-  { id: 7, label: 'Calculating Fair Living Price Index...', detail: 'Benchmarking raw craft labor and fair trade market rates' },
-  { id: 8, label: 'Appraisal Report Generated', detail: 'Finalizing structured marketplace catalog payload' },
+  { id: 1, label: 'Uploading image...', detail: 'Preparing high-resolution neural vision buffer' },
+  { id: 2, label: 'Detecting product...', detail: 'Classifying traditional handicraft structure, motifs & geometry' },
+  { id: 3, label: 'Identifying material...', detail: 'Spectro-texture detection of wood, clay, stone, metal & fibers' },
+  { id: 4, label: 'Analyzing craft style...', detail: 'Recognizing regional Indian artisan lineage & school of art' },
+  { id: 5, label: 'Detecting colors...', detail: 'Extracting primary pigments & natural vegetable/mineral dyes' },
+  { id: 6, label: 'Estimating dimensions...', detail: 'Calibrating spatial perspective & volumetric proportions' },
+  { id: 7, label: 'Evaluating quality...', detail: 'Scoring edge symmetry, intricate detailing & surface finish' },
+  { id: 8, label: 'Estimating market price...', detail: 'Benchmarking raw craft labor and fair trade market rates' },
+  { id: 9, label: 'Analysis complete', detail: 'Finalizing structured marketplace catalog payload' },
 ];
 
 function loadImageElement(src: string): Promise<HTMLImageElement> {
@@ -421,6 +422,7 @@ interface VisualFeatures {
   aspectRatio: number;
   juteRatio: number;
   redBeadRatio: number;
+  isTealightDiya: boolean;
 }
 
 async function analyzeVisualPixels(imageSource: string | File): Promise<VisualFeatures | null> {
@@ -520,6 +522,28 @@ async function analyzeVisualPixels(imageSource: string | File): Promise<VisualFe
     const isGreyScale = saturation < 0.22 || Math.abs(r - g) + Math.abs(g - b) + Math.abs(r - b) < 40;
     const aspectRatio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
 
+    // Center core wax vs surrounding mandala rim luminosity (for circular diya / tealight holder)
+    let innerLumSum = 0, innerCount = 0;
+    let ringLumSum = 0, ringCount = 0;
+    const midX = width / 2, midY = height / 2;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const dist = Math.hypot(x - midX, y - midY) / width;
+        const i = (y * width + x) * 4;
+        const lumVal = 0.299 * imgData[i] + 0.587 * imgData[i + 1] + 0.114 * imgData[i + 2];
+        if (dist <= 0.18) {
+          innerLumSum += lumVal;
+          innerCount++;
+        } else if (dist >= 0.22 && dist <= 0.44) {
+          ringLumSum += lumVal;
+          ringCount++;
+        }
+      }
+    }
+    const centerLum = innerCount > 0 ? innerLumSum / innerCount : brightness;
+    const ringLum = ringCount > 0 ? ringLumSum / ringCount : brightness;
+    const isTealightDiya = (centerLum - ringLum >= 30 && centerLum >= 160) || (centerLum >= 170 && ringLum < 140);
+
     return {
       r,
       g,
@@ -531,6 +555,7 @@ async function analyzeVisualPixels(imageSource: string | File): Promise<VisualFe
       aspectRatio,
       juteRatio,
       redBeadRatio,
+      isTealightDiya,
     };
   } catch (err) {
     console.warn('analyzeVisualPixels encountered error, using fallback:', err);
@@ -597,6 +622,34 @@ async function generateSmartMockAnalysis(imageSource: string | File): Promise<AI
         descriptionSnippet: 'Artisan hand-braided golden jute twine formed into dual harmony wreaths accented with hand-cut burlap floral rosettes and lacquer wood beads.',
         culturalSignificance: 'Traditional natural fiber craft rooted in rural Bengal and coastal artisan self-help clusters.',
         craftingTechnique: 'Manual 3-ply jute rope braiding, burlap petal fluting, and eco-friendly twine binding.',
+        isValidCraft: true,
+        isHumanSubject: false,
+        isDocumentSubject: false,
+      };
+    }
+
+    // A0-1: HAND-PAINTED MANDALA TERRACOTTA / STONE TEALIGHT DIYA (USER SCREENSHOT MATCH)
+    if (features.isTealightDiya) {
+      return {
+        productName: 'Hand-Painted Dot-Mandala Terracotta & Stone Tealight Diya',
+        category: 'Terracotta',
+        material: 'Kiln-Fired Riverbed Terracotta, Organic Mineral Pigments & Natural Wax',
+        model: 'Traditional Sacred Dot-Mandala Concentric Ring Motif',
+        dimensions: '12 × 12 × 4.5 cm',
+        length: 12,
+        width: 12,
+        height: 4.5,
+        primaryColor: 'Matte Charcoal & Pearl White',
+        secondaryColor: 'Ivory Wax Core & Terracotta Base',
+        qualityScore: 4.9,
+        qualityStars: '★★★★★',
+        estimatedPriceMin: 450,
+        estimatedPriceMax: 750,
+        suggestedPrice: 599,
+        confidence: 97,
+        descriptionSnippet: 'Artisan hand-turned terracotta base adorned with micro-pointillism dot-mandala sacred geometry in durable mineral pigments, holding a pure hand-poured tealight candle.',
+        culturalSignificance: 'Rooted in Indian festive ritual lighting and meditative mandala art traditions celebrated during Diwali and sacred occasions.',
+        craftingTechnique: 'Potter wheel casting, wood-ash kiln firing, manual dot-emboss stylus painting, and beeswax pouring.',
         isValidCraft: true,
         isHumanSubject: false,
         isDocumentSubject: false,
@@ -936,29 +989,29 @@ function fileToBase64(file: Blob): Promise<string> {
 }
 
 export const CRAFT_APPRAISAL_TEMPLATES: Record<string, { label: string; icon: string; analysis: AIAnalysisResult }> = {
-  jute: {
-    label: 'Jute Wall Decor',
-    icon: '🌾',
+  tealight: {
+    label: 'Terracotta Diya / Tealight',
+    icon: '🪔',
     analysis: {
-      productName: 'Hand-Braided Natural Jute & Burlap Floral Wall Decor',
-      category: 'Bamboo',
-      material: '100% Eco-Friendly Golden Jute Fiber, Braided Coir & Burlap',
-      model: 'Twined Jute Ring Wreath with Handcrafted Burlap Blossom Motifs',
-      dimensions: '25 × 25 × 4 cm',
-      length: 25,
-      width: 25,
-      height: 4,
-      primaryColor: 'Natural Golden Jute',
-      secondaryColor: 'Ivory Burlap & Crimson Bead',
-      qualityScore: 4.8,
-      qualityStars: '★★★★☆',
-      estimatedPriceMin: 750,
-      estimatedPriceMax: 1200,
-      suggestedPrice: 899,
-      confidence: 96,
-      descriptionSnippet: 'Artisan hand-braided golden jute twine formed into dual harmony wreaths accented with hand-cut burlap floral rosettes and lacquer wood beads.',
-      culturalSignificance: 'Traditional natural fiber craft rooted in rural Bengal and coastal artisan self-help clusters.',
-      craftingTechnique: 'Manual 3-ply jute rope braiding, burlap petal fluting, and eco-friendly twine binding.',
+      productName: 'Hand-Painted Dot-Mandala Terracotta & Stone Tealight Diya',
+      category: 'Terracotta',
+      material: 'Kiln-Fired Riverbed Terracotta, Organic Mineral Pigments & Natural Wax',
+      model: 'Traditional Sacred Dot-Mandala Concentric Ring Motif',
+      dimensions: '12 × 12 × 4.5 cm',
+      length: 12,
+      width: 12,
+      height: 4.5,
+      primaryColor: 'Matte Charcoal & Pearl White',
+      secondaryColor: 'Ivory Wax Core & Terracotta Base',
+      qualityScore: 4.9,
+      qualityStars: '★★★★★',
+      estimatedPriceMin: 450,
+      estimatedPriceMax: 750,
+      suggestedPrice: 599,
+      confidence: 97,
+      descriptionSnippet: 'Artisan hand-turned terracotta base adorned with micro-pointillism dot-mandala sacred geometry in durable mineral pigments, holding a pure hand-poured tealight candle.',
+      culturalSignificance: 'Rooted in Indian festive ritual lighting and meditative mandala art traditions celebrated during Diwali and sacred occasions.',
+      craftingTechnique: 'Potter wheel casting, wood-ash kiln firing, manual dot-emboss stylus painting, and beeswax pouring.',
       isValidCraft: true,
       isHumanSubject: false,
       isDocumentSubject: false,
@@ -991,31 +1044,6 @@ export const CRAFT_APPRAISAL_TEMPLATES: Record<string, { label: string; icon: st
       isHumanSubject: false,
     },
   },
-  cushion: {
-    label: 'Handloom Cushion / Fabric',
-    icon: '🧵',
-    analysis: {
-      productName: 'Handloom Textured Weave / Artisan Cotton Cushion',
-      category: 'Handloom',
-      material: 'Hand-Spun Indigenous Cotton & Natural Linen',
-      model: 'Textured Geometric Diamond Weave',
-      dimensions: '45 × 45 × 12 cm',
-      length: 45,
-      width: 45,
-      height: 12,
-      primaryColor: 'Slate Grey',
-      secondaryColor: 'Ash Charcoal',
-      qualityScore: 4.8,
-      qualityStars: '★★★★☆',
-      estimatedPriceMin: 1450,
-      estimatedPriceMax: 1850,
-      suggestedPrice: 1650,
-      confidence: 96,
-      descriptionSnippet: 'Authentic hand-woven textured cushion craft made from hand-spun natural indigenous cotton yarn with organic vegetable-mineral ash dye.',
-      culturalSignificance: 'Rooted in traditional handloom cluster traditions, preserving hereditary artisan livelihoods and ethical slow fashion.',
-      craftingTechnique: 'Pit loom shuttle weaving with reinforced double-ply cotton yarn and hand-finished piping.',
-    },
-  },
   wood: {
     label: 'Teakwood Sculpture',
     icon: '🪵',
@@ -1042,8 +1070,33 @@ export const CRAFT_APPRAISAL_TEMPLATES: Record<string, { label: string; icon: st
     },
   },
   pottery: {
-    label: 'Terracotta & Clay',
+    label: 'Blue Pottery Vessel',
     icon: '🏺',
+    analysis: {
+      productName: 'Jaipur Traditional Blue Pottery Ceramic Vessel',
+      category: 'Pottery',
+      material: 'Quartz Powder, Fuller’s Earth & Copper Oxide Glaze',
+      model: 'Classical Persian Floral Motif (Jaipur School)',
+      dimensions: '15 × 15 × 25 cm',
+      length: 15,
+      width: 15,
+      height: 25,
+      primaryColor: 'Cobalt Blue',
+      secondaryColor: 'Persian Turquoise',
+      qualityScore: 4.9,
+      qualityStars: '★★★★★',
+      estimatedPriceMin: 1800,
+      estimatedPriceMax: 2400,
+      suggestedPrice: 2199,
+      confidence: 96,
+      descriptionSnippet: 'Lead-free handmade quartz ceramic vessel adorned with cobalt-oxide floral arabesques and smooth kiln-fired glaze.',
+      culturalSignificance: 'GI-tagged Jaipur heritage craft brought from Turko-Persian masters under royal Rajput patronage.',
+      craftingTechnique: 'Mold-cast quartz dough, hand-painted mineral pigments, and wood-fired kiln baking.',
+    },
+  },
+  terracotta: {
+    label: 'Terracotta Urn',
+    icon: '🪨',
     analysis: {
       productName: 'Gorakhpur Handcrafted Terracotta Clay Pottery',
       category: 'Terracotta',
@@ -1066,8 +1119,58 @@ export const CRAFT_APPRAISAL_TEMPLATES: Record<string, { label: string; icon: st
       craftingTechnique: 'Potter’s wheel throwing, paddle beat shaping, and wood-ash kiln firing.',
     },
   },
+  silk: {
+    label: 'Mulberry Silk Handloom',
+    icon: '🥻',
+    analysis: {
+      productName: 'Kanchipuram Mulberry Silk & Zari Handloom',
+      category: 'Handloom',
+      material: 'Pure Mulberry Silk & Tested Gold Zari',
+      model: 'Korvai Contrast Temple Border Style',
+      dimensions: '550 × 120 × 0.2 cm',
+      length: 550,
+      width: 120,
+      height: 0.2,
+      primaryColor: 'Crimson Red',
+      secondaryColor: 'Pure Gold Zari',
+      qualityScore: 4.9,
+      qualityStars: '★★★★★',
+      estimatedPriceMin: 6500,
+      estimatedPriceMax: 8500,
+      suggestedPrice: 7499,
+      confidence: 98,
+      descriptionSnippet: 'Heavy pure silk handloom with interlocking Korvai border and authentic gold-dipped silver zari motifs.',
+      culturalSignificance: 'Heritage weaving traditions of Tamil Nadu temple towns, worn for sacred milestones.',
+      craftingTechnique: 'Double-pedal shuttle loom weaving with manual warp interlocking.',
+    },
+  },
+  bamboo: {
+    label: 'Bamboo Craft',
+    icon: '🎋',
+    analysis: {
+      productName: 'Majuli Riverbank Bamboo & Cane Craft Basket',
+      category: 'Bamboo Craft',
+      material: 'Indigenous Seasoned River Cane & Bamboo',
+      model: 'Assamese Multi-Tier Weave Style',
+      dimensions: '30 × 30 × 35 cm',
+      length: 30,
+      width: 30,
+      height: 35,
+      primaryColor: 'Natural Reed Green',
+      secondaryColor: 'Golden Straw',
+      qualityScore: 4.8,
+      qualityStars: '★★★★☆',
+      estimatedPriceMin: 1100,
+      estimatedPriceMax: 1650,
+      suggestedPrice: 1350,
+      confidence: 96,
+      descriptionSnippet: 'Pliable wild riverbank bamboo hand-split into uniform filaments and woven into eco-friendly functional art.',
+      culturalSignificance: 'Sacred river island craft of Majuli, Assam, carrying generations of tribal bamboo wisdom.',
+      craftingTechnique: 'Manual splint knife shaving, smoke seasoning, and interlocking twill weave.',
+    },
+  },
   brass: {
-    label: 'Brass & Metal Craft',
+    label: 'Metal Craft',
     icon: '✨',
     analysis: {
       productName: 'Moradabad Hand-Engraved Brass Peacock Diya',
@@ -1091,54 +1194,113 @@ export const CRAFT_APPRAISAL_TEMPLATES: Record<string, { label: string; icon: st
       craftingTechnique: 'Lost-wax sand casting, manual filing, and fine stylus stippling.',
     },
   },
-  bamboo: {
-    label: 'Bamboo & Cane',
-    icon: '🎋',
+  jewellery: {
+    label: 'Kundan Jewellery',
+    icon: '💎',
     analysis: {
-      productName: 'Majuli Riverbank Bamboo & Cane Craft Basket',
-      category: 'Bamboo',
-      material: 'Indigenous Seasoned River Cane & Bamboo',
-      model: 'Assamese Multi-Tier Weave Style',
-      dimensions: '30 × 30 × 35 cm',
-      length: 30,
-      width: 30,
-      height: 35,
-      primaryColor: 'Natural Reed Green',
-      secondaryColor: 'Golden Straw',
-      qualityScore: 4.8,
-      qualityStars: '★★★★☆',
-      estimatedPriceMin: 1100,
-      estimatedPriceMax: 1650,
-      suggestedPrice: 1350,
-      confidence: 96,
-      descriptionSnippet: 'Pliable wild riverbank bamboo hand-split into uniform filaments and woven into eco-friendly functional art.',
-      culturalSignificance: 'Sacred river island craft of Majuli, Assam, carrying generations of tribal bamboo wisdom.',
-      craftingTechnique: 'Manual splint knife shaving, smoke seasoning, and interlocking twill weave.',
-    },
-  },
-  silk: {
-    label: 'Mulberry Silk & Zari',
-    icon: '🥻',
-    analysis: {
-      productName: 'Kanchipuram Mulberry Silk & Zari Handloom',
-      category: 'Handloom',
-      material: 'Pure Mulberry Silk & Tested Gold Zari',
-      model: 'Korvai Contrast Temple Border Style',
-      dimensions: '550 × 120 × 0.2 cm',
-      length: 550,
-      width: 120,
-      height: 0.2,
-      primaryColor: 'Crimson Red',
-      secondaryColor: 'Pure Gold Zari',
+      productName: 'Royal Jaipur Meenakari Kundan Choker Necklace',
+      category: 'Jewellery',
+      material: 'Silver-Copper Alloy Core, 24K Gold Foil & Natural Enamel',
+      model: 'Royal Rajputana Court Jewelry Style',
+      dimensions: '22 × 5 × 1 cm',
+      length: 22,
+      width: 5,
+      height: 1,
+      primaryColor: 'Imperial Emerald & Ruby Red',
+      secondaryColor: 'Pure Gold Leaf Lustre',
       qualityScore: 4.9,
       qualityStars: '★★★★★',
-      estimatedPriceMin: 6500,
-      estimatedPriceMax: 8500,
-      suggestedPrice: 7499,
-      confidence: 98,
-      descriptionSnippet: 'Heavy pure silk handloom with interlocking Korvai border and authentic gold-dipped silver zari motifs.',
-      culturalSignificance: 'Heritage weaving traditions of Tamil Nadu temple towns, worn for sacred milestones.',
-      craftingTechnique: 'Double-pedal shuttle loom weaving with manual warp interlocking.',
+      estimatedPriceMin: 4800,
+      estimatedPriceMax: 7200,
+      suggestedPrice: 5899,
+      confidence: 96,
+      descriptionSnippet: 'Handcrafted royal choker necklace with reverse-side floral Meenakari vitreous enamel and bezel-set uncut stones.',
+      culturalSignificance: '500-year-old Rajasthani court jewelry lineage originating in the royal workshops of Amer and Jaipur.',
+      craftingTechnique: 'Champlevé vitreous enameling, lac filling, and manual 24K pure gold foil burnishing.',
+      isValidCraft: true,
+      isHumanSubject: false,
+    },
+  },
+  painting: {
+    label: 'Madhubani Art',
+    icon: '🖌️',
+    analysis: {
+      productName: 'Madhubani Tree of Life Folk Painting on Handmade Paper',
+      category: 'Painting',
+      material: 'Handmade Cotton Rag Paper & Natural Organic Pigments',
+      model: 'Mithila Kachni & Bharni Lineage Style',
+      dimensions: '42 × 30 × 0.1 cm',
+      length: 42,
+      width: 30,
+      height: 0.1,
+      primaryColor: 'Natural Turmeric Ochre',
+      secondaryColor: 'Indigo & Soot Black',
+      qualityScore: 4.9,
+      qualityStars: '★★★★★',
+      estimatedPriceMin: 1800,
+      estimatedPriceMax: 2900,
+      suggestedPrice: 2299,
+      confidence: 97,
+      descriptionSnippet: 'Intricate freehand line painting celebrating universal fertility and nature using bamboo nibs and natural plant extracts.',
+      culturalSignificance: 'Ancient women-led folk art tradition of the Mithila region, recognized globally for vibrant storytelling.',
+      craftingTechnique: 'Bamboo dip-pen linework, double-contour sketching, and herbal pigment hand filling.',
+      isValidCraft: true,
+      isHumanSubject: false,
+    },
+  },
+  textile: {
+    label: 'Textile / Tapestry',
+    icon: '🧵',
+    analysis: {
+      productName: 'Kutch Hand-Embroidered Mirrorwork Wall Tapestry',
+      category: 'Textile',
+      material: 'Khadi Cotton, Silk Floss Thread & Convex Glass Mirrors',
+      model: 'Rabari Tribal Chain-Stitch & Abhala Mirrorwork',
+      dimensions: '60 × 40 × 1 cm',
+      length: 60,
+      width: 40,
+      height: 1,
+      primaryColor: 'Saffron Rust & Indigo',
+      secondaryColor: 'Gleaming Mirror Accents',
+      qualityScore: 4.8,
+      qualityStars: '★★★★☆',
+      estimatedPriceMin: 2200,
+      estimatedPriceMax: 3400,
+      suggestedPrice: 2699,
+      confidence: 95,
+      descriptionSnippet: 'Vibrant hand-stitched nomadic wall hanging displaying geometric tribal motifs framed with circular glass mirror embroidery.',
+      culturalSignificance: 'Hereditary craft of pastoral communities across the desert Rann of Kutch, Gujarat.',
+      craftingTechnique: 'Manual herringbone chain stitching, mirror buttonholing, and tasseled wool fringe edging.',
+      isValidCraft: true,
+      isHumanSubject: false,
+    },
+  },
+  homedecor: {
+    label: 'Home Decor',
+    icon: '🌾',
+    analysis: {
+      productName: 'Hand-Braided Natural Jute & Burlap Floral Wall Decor',
+      category: 'Home Decor',
+      material: '100% Eco-Friendly Golden Jute Fiber, Braided Coir & Burlap',
+      model: 'Twined Jute Ring Wreath with Handcrafted Burlap Blossom Motifs',
+      dimensions: '25 × 25 × 4 cm',
+      length: 25,
+      width: 25,
+      height: 4,
+      primaryColor: 'Natural Golden Jute',
+      secondaryColor: 'Ivory Burlap & Crimson Bead',
+      qualityScore: 4.8,
+      qualityStars: '★★★★☆',
+      estimatedPriceMin: 750,
+      estimatedPriceMax: 1200,
+      suggestedPrice: 899,
+      confidence: 96,
+      descriptionSnippet: 'Artisan hand-braided golden jute twine formed into dual harmony wreaths accented with hand-cut burlap floral rosettes and lacquer wood beads.',
+      culturalSignificance: 'Traditional natural fiber craft rooted in rural Bengal and coastal artisan self-help clusters.',
+      craftingTechnique: 'Manual 3-ply jute rope braiding, burlap petal fluting, and eco-friendly twine binding.',
+      isValidCraft: true,
+      isHumanSubject: false,
+      isDocumentSubject: false,
     },
   },
 };

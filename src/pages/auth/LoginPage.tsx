@@ -4,6 +4,7 @@ import { Sparkles, Lock, User, Phone, CheckCircle, Shield, ArrowRight, AlertCirc
 import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
 import { otpService } from '../../services/otpService';
+import { Avatar } from '../../components/common/Avatar';
 
 export const LoginPage: React.FC = () => {
   const { login, verifyOtp, loginAsSeller, loginAsBuyer } = useApp();
@@ -131,22 +132,25 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* SECTION 42: SIH Judge Quick Demo Presets */}
-        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-heritage-sand via-heritage-ivory to-heritage-sand border-2 border-heritage-gold/50 shadow-sm">
-          <p className="text-xs font-bold text-heritage-brown text-center mb-2 flex items-center justify-center">
-            <Shield className="w-3.5 h-3.5 mr-1 text-heritage-terracotta" />
-            SIH 2026 Evaluation Presets
+        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-heritage-sand/80 via-white to-heritage-sand/80 border-2 border-heritage-gold/60 shadow-md">
+          <p className="text-xs font-bold text-heritage-brown text-center mb-3 flex items-center justify-center">
+            <Shield className="w-3.5 h-3.5 mr-1.5 text-heritage-terracotta" />
+            <span>Instant Demo Access for SIH 2026 Evaluators</span>
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => {
                 loginAsSeller();
                 navigate('/seller/dashboard');
               }}
-              className="py-2 px-3 rounded-xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm transition flex flex-col items-center"
+              className="p-3 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
             >
-              <span>Try Seller Demo</span>
-              <span className="text-[10px] font-normal opacity-90">Ravi Kumar (Wood)</span>
+              <Avatar name="Ravi Kumar" size="sm" className="border-white/40 group-hover:scale-105 transition-transform" />
+              <div className="min-w-0">
+                <span className="block leading-tight font-black">Try Seller Demo</span>
+                <span className="text-[10px] font-normal text-white/80 truncate block">Ravi Kumar (Artisan)</span>
+              </div>
             </button>
             <button
               type="button"
@@ -154,10 +158,13 @@ export const LoginPage: React.FC = () => {
                 loginAsBuyer();
                 navigate('/buyer/marketplace');
               }}
-              className="py-2 px-3 rounded-xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm transition flex flex-col items-center"
+              className="p-3 rounded-2xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group"
             >
-              <span>Try Buyer Demo</span>
-              <span className="text-[10px] font-normal opacity-90">Ananya (Patron)</span>
+              <Avatar name="Ananya Sharma" size="sm" className="border-heritage-gold/40 group-hover:scale-105 transition-transform" />
+              <div className="min-w-0">
+                <span className="block leading-tight font-black text-white">Try Buyer Demo</span>
+                <span className="text-[10px] font-normal text-heritage-sand/80 truncate block">Ananya Sharma (Patron)</span>
+              </div>
             </button>
           </div>
         </div>

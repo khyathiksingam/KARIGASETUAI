@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingBag, Star, Sparkles, MapPin, CheckCircle, ShieldCheck } from 'lucide-react';
 import { Product } from '../../types';
 import { useApp } from '../../context/AppContext';
+import { Avatar } from '../common/Avatar';
 
 interface ProductCard3DProps {
   product: Product;
@@ -124,10 +125,12 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({ product }) => {
             to={`/artisan/${product.seller.username}`}
             className="flex items-center space-x-2 group/seller hover:opacity-90"
           >
-            <img
+            <Avatar
               src={product.seller.profile_image}
-              alt={product.seller.full_name}
-              className="w-8 h-8 rounded-full object-cover border border-heritage-gold shadow-sm"
+              name={product.seller.full_name}
+              role="seller"
+              size="sm"
+              className="border border-heritage-gold shadow-sm shrink-0"
             />
             <div className="text-left">
               <p className="text-[10px] text-heritage-terracotta font-semibold uppercase tracking-wider leading-none">

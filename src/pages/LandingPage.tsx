@@ -20,6 +20,7 @@ import { FloatingCraftHero3D } from '../components/3d/FloatingCraftHero3D';
 import { ProductCard3D } from '../components/3d/ProductCard3D';
 import { useApp } from '../context/AppContext';
 import { DEMO_SELLERS } from '../data/seedData';
+import { Avatar } from '../components/common/Avatar';
 
 export const LandingPage: React.FC = () => {
   const { products, loginAsSeller, loginAsBuyer } = useApp();
@@ -215,7 +216,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* SECTION 7: HOW IT WORKS (Seller Flow vs Buyer Flow) */}
-      <section className="py-20">
+      <section id="how-it-works" className="py-20 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-heritage-terracotta">
@@ -370,10 +371,12 @@ export const LandingPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center space-x-4 mb-4">
-                    <img
+                    <Avatar
                       src={seller.profile_image}
-                      alt={seller.full_name}
-                      className="w-14 h-14 rounded-full object-cover border-2 border-heritage-gold shadow-sm"
+                      name={seller.full_name}
+                      role="seller"
+                      size="lg"
+                      className="border-2 border-heritage-gold shadow-sm shrink-0"
                     />
                     <div>
                       <h4 className="font-serif font-bold text-lg text-heritage-brown">

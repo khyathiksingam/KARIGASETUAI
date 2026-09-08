@@ -17,6 +17,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { ProductCard3D } from '../../components/3d/ProductCard3D';
 import { CRAFT_CATEGORIES, DEMO_SELLERS } from '../../data/seedData';
+import { Avatar } from '../../components/common/Avatar';
 
 export const BuyerDashboard: React.FC = () => {
   const { currentUser, products, orders, wishlist } = useApp();
@@ -218,10 +219,12 @@ export const BuyerDashboard: React.FC = () => {
                   className="p-3 rounded-2xl border border-heritage-sand hover:bg-heritage-sand/30 transition flex items-center justify-between group"
                 >
                   <div className="flex items-center space-x-3">
-                    <img
+                    <Avatar
                       src={seller.profile_image}
-                      alt={seller.full_name}
-                      className="w-10 h-10 rounded-full object-cover border border-heritage-gold shadow-sm"
+                      name={seller.full_name}
+                      role="seller"
+                      size="md"
+                      className="border border-heritage-gold shadow-sm shrink-0"
                     />
                     <div>
                       <p className="text-xs font-bold text-heritage-brown group-hover:text-heritage-terracotta transition">

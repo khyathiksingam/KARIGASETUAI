@@ -613,29 +613,36 @@ export const AIProductAnalyzerPage: React.FC = () => {
               ) : (
                 /* SECTION 16: FULL 3D RESULT CARD */
                 <div className="card-3d bg-white rounded-3xl p-6 sm:p-8 border-2 border-heritage-gold shadow-3d-lg space-y-6 relative overflow-hidden">
-                {/* Notice banner with Computer Vision & Gemini Key Config */}
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center space-x-2">
-                    <Sparkles className="w-4 h-4 shrink-0 text-amber-600" />
-                    <span>
-                      {isMockResult 
-                        ? 'AI Computer Vision: Analyzed craft material, color spectra & dimensions from image pixels.' 
-                        : 'Google Gemini Vision: Live neural craft appraisal verified.'}
-                    </span>
+                {/* Subtle Non-Blocking AI Mode Badge */}
+                <div className="p-3 bg-gradient-to-r from-amber-50/80 to-heritage-ivory border border-amber-200/80 rounded-2xl flex items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                      <Sparkles className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-heritage-brown">
+                          {isMockResult ? 'Demo AI Analysis' : 'AI Analysis'}
+                        </span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          isMockResult 
+                            ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+                            : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        }`}>
+                          {isMockResult ? 'Smart Local Engine' : 'Live Neural Vision'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-heritage-charcoal/70 mt-0.5">
+                        {isMockResult 
+                          ? 'AI-generated estimates are for demonstration purposes.' 
+                          : 'Live neural craft appraisal verified with multimodal visual features.'}
+                      </p>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const key = prompt('Enter your Google Gemini Vision API Key (saved in local browser storage):', localStorage.getItem('karigarsetu_gemini_api_key') || '');
-                      if (key !== null) {
-                        localStorage.setItem('karigarsetu_gemini_api_key', key.trim());
-                        alert(key.trim() ? 'Gemini API Key saved! Click Analyze to run cloud appraisal.' : 'Gemini Key cleared. Using smart local computer vision.');
-                      }
-                    }}
-                    className="px-2.5 py-1 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-lg text-[10px] font-bold shrink-0 transition self-start sm:self-auto"
-                  >
-                    ⚙️ Configure Gemini Key
-                  </button>
+                  <div className="hidden sm:flex items-center space-x-1 text-[11px] font-medium text-heritage-charcoal/60 bg-white/80 px-2.5 py-1 rounded-xl border border-heritage-sand/60 shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mr-1" />
+                    <span>Active & Verified</span>
+                  </div>
                 </div>
 
                 {/* Published Success Alert */}
@@ -774,8 +781,8 @@ export const AIProductAnalyzerPage: React.FC = () => {
                 {/* PRICING ESTIMATION CARDS */}
                 <div className="p-5 rounded-2xl bg-gradient-to-r from-heritage-sand/70 via-heritage-ivory to-heritage-sand/70 border border-heritage-gold/50 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                   <div>
-                    <span className="text-[10px] font-bold uppercase text-heritage-charcoal/60 block">
-                      Estimated Market Price
+                    <span className="text-[10px] text-emerald-800 font-bold uppercase block flex items-center">
+                      Market Price <span className="ml-1 text-[9px] font-normal text-heritage-charcoal/60">(AI Estimated)</span>
                     </span>
                     <span className="text-base font-extrabold text-heritage-charcoal">
                       ₹{analysisResult.estimatedPriceMin.toLocaleString('en-IN')} – ₹{analysisResult.estimatedPriceMax.toLocaleString('en-IN')}
@@ -796,9 +803,11 @@ export const AIProductAnalyzerPage: React.FC = () => {
                 </div>
 
                 {/* Legal / AI disclaimer */}
-                <p className="text-[10px] text-heritage-charcoal/60 italic leading-relaxed">
-                  * Note: AI estimates are algorithmic suggestions based on image geometry, craft history, and regional benchmark data, not absolute guarantees. Artisans may customize all details prior to final publishing.
-                </p>
+                <div className="p-3 bg-heritage-sand/20 rounded-xl border border-heritage-sand/50">
+                  <p className="text-xs text-heritage-charcoal/80 font-medium leading-relaxed">
+                    * Note: AI estimates are suggestions, not guarantees. Artisans may customize and adjust all specifications prior to final publishing.
+                  </p>
+                </div>
 
                 {/* ACTION BUTTONS (Section 16: Edit Details, Publish Product, Analyze Again) */}
                 <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">

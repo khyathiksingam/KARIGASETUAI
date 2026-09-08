@@ -16,6 +16,7 @@ import {
   Award
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { Avatar } from '../common/Avatar';
 
 export const Navbar: React.FC = () => {
   const { 
@@ -47,55 +48,11 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 bg-heritage-ivory/90 backdrop-blur-md border-b border-heritage-terracotta/15 transition-all">
       {/* SIH Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-heritage-brown via-heritage-terracotta to-heritage-brown text-heritage-gold-light py-1 px-4 text-xs font-medium text-center flex items-center justify-between shadow-sm">
-        <div className="hidden md:flex items-center space-x-2">
-          <span className="bg-heritage-gold text-heritage-brown font-bold px-2 py-0.5 rounded-full text-[10px] tracking-wider uppercase">
-            SIH 2026
-          </span>
-          <span>Smart India Hackathon • Team HEXANOVA • Theme: Heritage & Culture</span>
-        </div>
-        
-        {/* Quick Demo Role Switchers */}
-        <div className="flex items-center space-x-2 mx-auto md:mx-0">
-          <span className="text-white/80 hidden sm:inline">Quick Demo:</span>
-          <button
-            onClick={() => {
-              loginAsSeller();
-              navigate('/seller/dashboard');
-            }}
-            className={`px-2.5 py-0.5 rounded text-[11px] font-semibold transition-all ${
-              currentRole === 'seller'
-                ? 'bg-heritage-gold text-heritage-brown shadow-sm scale-105'
-                : 'bg-black/20 text-white hover:bg-black/40'
-            }`}
-          >
-            Artisan Mode (Ravi)
-          </button>
-          <button
-            onClick={() => {
-              loginAsBuyer();
-              navigate('/buyer/marketplace');
-            }}
-            className={`px-2.5 py-0.5 rounded text-[11px] font-semibold transition-all ${
-              currentRole === 'buyer'
-                ? 'bg-heritage-gold text-heritage-brown shadow-sm scale-105'
-                : 'bg-black/20 text-white hover:bg-black/40'
-            }`}
-          >
-            Buyer Mode (Ananya)
-          </button>
-          <button
-            onClick={() => {
-              if (window.confirm('Reset all demo catalog, orders, and credits to fresh state?')) {
-                resetDemoData();
-              }
-            }}
-            title="Reset Demo Data"
-            className="p-1 rounded bg-black/20 hover:bg-black/40 text-heritage-gold-light transition"
-          >
-            <RotateCcw className="w-3 h-3" />
-          </button>
-        </div>
+      <div className="bg-gradient-to-r from-heritage-brown via-heritage-terracotta to-heritage-brown text-heritage-gold-light py-1.5 px-4 text-xs font-medium text-center shadow-sm flex items-center justify-center space-x-2">
+        <span className="bg-heritage-gold text-heritage-brown font-bold px-2 py-0.5 rounded-full text-[10px] tracking-wider uppercase shadow-xs">
+          SIH 2026
+        </span>
+        <span className="truncate">Smart India Hackathon • Team HEXANOVA • Theme: Heritage & Culture</span>
       </div>
 
       {/* Main Navigation Bar */}
@@ -138,6 +95,12 @@ export const Navbar: React.FC = () => {
           >
             Marketplace
           </Link>
+          <a 
+            href="/#how-it-works" 
+            className="hover:text-heritage-terracotta transition"
+          >
+            How It Works
+          </a>
           <Link 
             to="/seller/ai-analyzer" 
             className="flex items-center space-x-1.5 bg-gradient-to-r from-heritage-terracotta/10 to-heritage-gold/15 text-heritage-terracotta px-3 py-1.5 rounded-full border border-heritage-terracotta/25 hover:border-heritage-terracotta hover:bg-heritage-terracotta/20 transition group"
@@ -205,10 +168,11 @@ export const Navbar: React.FC = () => {
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="flex items-center space-x-2 p-1.5 rounded-full border border-heritage-terracotta/20 hover:border-heritage-terracotta bg-white/80 transition"
               >
-                <img
+                <Avatar
                   src={currentUser.profile_image}
-                  alt={currentUser.full_name}
-                  className="w-8 h-8 rounded-full object-cover border border-heritage-gold"
+                  name={currentUser.full_name}
+                  size="sm"
+                  role={currentUser.role}
                 />
                 <div className="hidden lg:block text-left pr-2">
                   <p className="text-xs font-bold text-heritage-brown leading-none">
@@ -344,34 +308,55 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-heritage-ivory border-b border-heritage-terracotta/20 px-4 pt-2 pb-6 space-y-3">
+        <div className="md:hidden bg-heritage-ivory border-b border-heritage-terracotta/20 px-4 pt-3 pb-6 space-y-3">
+          {currentUser && (
+            <div className="flex items-center space-x-3 p-3 bg-white rounded-2xl border border-heritage-sand/80 shadow-xs mb-2">
+              <Avatar
+                src={currentUser.profile_image}
+                name={currentUser.full_name}
+                size="md"
+                role={currentUser.role}
+              />
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-xs font-bold text-heritage-brown truncate">{currentUser.full_name}</p>
+                <p className="text-[11px] text-heritage-terracotta font-medium capitalize">{currentUser.role}</p>
+              </div>
+            </div>
+          )}
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-base font-semibold text-heritage-brown hover:text-heritage-terracotta"
+            className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
           >
             Home
           </Link>
           <Link
             to="/marketplace"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-base font-semibold text-heritage-brown hover:text-heritage-terracotta"
+            className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
           >
             Marketplace
           </Link>
+          <a
+            href="/#how-it-works"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
+          >
+            How It Works
+          </a>
           <Link
             to="/seller/ai-analyzer"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center space-x-2 py-2 text-base font-semibold text-heritage-terracotta"
+            className="flex items-center space-x-2 py-2 text-sm font-semibold text-heritage-terracotta"
           >
-            <Scan className="w-5 h-5" />
+            <Scan className="w-4 h-4" />
             <span>AI Product Analyzer</span>
           </Link>
           {currentUser?.role === 'seller' ? (
             <Link
               to="/seller/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-base font-semibold text-heritage-brown"
+              className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
             >
               Artisan Dashboard
             </Link>
@@ -379,10 +364,23 @@ export const Navbar: React.FC = () => {
             <Link
               to="/buyer/orders"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-base font-semibold text-heritage-brown"
+              className="block py-2 text-sm font-semibold text-heritage-brown hover:text-heritage-terracotta"
             >
               My Orders
             </Link>
+          )}
+          {currentUser && (
+            <button
+              onClick={() => {
+                logout();
+                setMobileMenuOpen(false);
+                navigate('/');
+              }}
+              className="w-full text-left py-2 text-sm font-semibold text-rose-600 hover:text-rose-700 flex items-center space-x-2 border-t border-heritage-sand/60 pt-3"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
           )}
         </div>
       )}

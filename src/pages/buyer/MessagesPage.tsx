@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { DEMO_SELLERS, DEMO_BUYER } from '../../data/seedData';
+import { Avatar } from '../../components/common/Avatar';
 
 export const MessagesPage: React.FC = () => {
   const { messages, sendMessage, currentUser, currentRole } = useApp();
@@ -80,10 +81,12 @@ export const MessagesPage: React.FC = () => {
                       : 'hover:bg-heritage-sand/60 border border-transparent'
                   }`}
                 >
-                  <img
+                  <Avatar
                     src={partner.profile_image}
-                    alt={partner.full_name}
-                    className="w-10 h-10 rounded-full object-cover border border-heritage-gold shrink-0"
+                    name={partner.full_name}
+                    role={partner.role || 'seller'}
+                    size="md"
+                    className="border border-heritage-gold shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-heritage-brown truncate">
@@ -103,10 +106,12 @@ export const MessagesPage: React.FC = () => {
             {/* Chat Header */}
             <div className="p-4 border-b border-heritage-sand bg-heritage-ivory/30 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <img
+                <Avatar
                   src={currentPartner.profile_image}
-                  alt={currentPartner.full_name}
-                  className="w-10 h-10 rounded-full object-cover border border-heritage-gold"
+                  name={currentPartner.full_name}
+                  role={currentPartner.role || 'seller'}
+                  size="md"
+                  className="border border-heritage-gold shrink-0"
                 />
                 <div>
                   <h3 className="font-serif font-bold text-sm text-heritage-brown">

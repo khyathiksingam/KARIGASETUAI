@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { CreditBadgeRadial } from '../../components/3d/CreditBadgeRadial';
+import { Avatar } from '../../components/common/Avatar';
 
 export const SellerDashboard: React.FC = () => {
   const { currentUser, products, orders, creditTransactions, logout, updateUserProfile, coupons } = useApp();
@@ -85,10 +86,12 @@ export const SellerDashboard: React.FC = () => {
               title="Click to change profile picture"
               onClick={() => avatarInputRef.current?.click()}
             >
-              <img
+              <Avatar
                 src={currentUser?.profile_image}
-                alt={currentUser?.full_name}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-heritage-gold shadow-md group-hover:opacity-85 transition"
+                name={currentUser?.full_name}
+                role={currentUser?.role || 'seller'}
+                size="xl"
+                className="rounded-2xl border-2 border-heritage-gold shadow-md group-hover:opacity-85 transition overflow-hidden"
               />
               <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition text-white">
                 <Camera className="w-5 h-5" />

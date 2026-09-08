@@ -18,6 +18,7 @@ import {
 import confetti from 'canvas-confetti';
 import { useApp } from '../../context/AppContext';
 import { ProductCard3D } from '../../components/3d/ProductCard3D';
+import { Avatar } from '../../components/common/Avatar';
 
 export const ProductDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -254,10 +255,12 @@ export const ProductDetailsPage: React.FC = () => {
                 to={`/artisan/${product.seller.username}`}
                 className="flex items-center space-x-3 group"
               >
-                <img
+                <Avatar
                   src={product.seller.profile_image}
-                  alt={product.seller.full_name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-heritage-gold shadow-sm"
+                  name={product.seller.full_name}
+                  role="seller"
+                  size="md"
+                  className="border-2 border-heritage-gold shadow-sm shrink-0"
                 />
                 <div>
                   <span className="text-[10px] font-bold text-heritage-terracotta uppercase tracking-wider block">

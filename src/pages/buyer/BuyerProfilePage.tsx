@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { User, MapPin, Mail, Phone, Heart, ShoppingBag, CheckCircle2, Camera, Upload } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LocationInput } from '../../components/common/LocationInput';
+import { Avatar } from '../../components/common/Avatar';
 
 export const BuyerProfilePage: React.FC = () => {
   const { currentUser, orders, wishlist, updateUserProfile } = useApp();
@@ -59,10 +60,12 @@ export const BuyerProfilePage: React.FC = () => {
         {/* Profile Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-heritage-terracotta/20 shadow-3d flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
           <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-            <img
+            <Avatar
               src={profileImage}
-              alt={fullName}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-heritage-gold shadow-md group-hover:opacity-85 transition"
+              name={fullName}
+              role="buyer"
+              size="xl"
+              className="w-24 h-24 sm:w-28 sm:h-28 border-4 border-heritage-gold shadow-md group-hover:opacity-85 transition overflow-hidden"
             />
             <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white">
               <Camera className="w-7 h-7" />

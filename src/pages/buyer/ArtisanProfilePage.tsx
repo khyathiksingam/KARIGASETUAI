@@ -15,6 +15,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { DEMO_SELLERS } from '../../data/seedData';
 import { ProductCard3D } from '../../components/3d/ProductCard3D';
+import { Avatar } from '../../components/common/Avatar';
 
 export const ArtisanProfilePage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -68,10 +69,12 @@ export const ArtisanProfilePage: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
             {/* Avatar with Badge Ring */}
             <div className="relative">
-              <img
+              <Avatar
                 src={artisan.profile_image}
-                alt={artisan.full_name}
-                className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-cover border-4 border-heritage-gold shadow-lg"
+                name={artisan.full_name}
+                role="seller"
+                size="xl"
+                className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl border-4 border-heritage-gold shadow-lg"
               />
               <span className="absolute -bottom-2 -right-2 bg-heritage-gold text-heritage-brown p-2 rounded-2xl shadow-md">
                 <Award className="w-5 h-5" />
