@@ -103,18 +103,6 @@ const ConfidenceGauge: React.FC<{ confidence: number }> = ({ confidence }) => {
   );
 };
 
-const getSensibleWeight = (material?: string, category?: string): string => {
-  const m = (material || '').toLowerCase();
-  const c = (category || '').toLowerCase();
-  if (m.includes('brass') || m.includes('metal') || c.includes('metal')) return '950g – 1.4 kg (AI Estimated)';
-  if (m.includes('clay') || m.includes('terracotta') || c.includes('pottery')) return '800g – 1.2 kg (AI Estimated)';
-  if (m.includes('wood') || c.includes('wood')) return '450g – 650g (AI Estimated)';
-  if (m.includes('silk') || m.includes('cotton') || c.includes('textile') || c.includes('saree')) return '350g – 500g (AI Estimated)';
-  if (m.includes('bamboo') || m.includes('cane') || c.includes('cane')) return '250g – 400g (AI Estimated)';
-  if (m.includes('jute') || c.includes('jute')) return '300g – 450g (AI Estimated)';
-  return '450g – 650g (AI Estimated)';
-};
-
 const getCraftingTechnique = (result: AIAnalysisResult): string => {
   if (result.craftingTechnique) return result.craftingTechnique;
   const c = (result.category || '').toLowerCase();
@@ -129,18 +117,8 @@ const getCraftingTechnique = (result: AIAnalysisResult): string => {
   return 'Traditional Artisan Handcrafting';
 };
 
-const getQualityMetrics = (score: number) => {
-  const base = score > 0 ? score : 4.8;
-  return {
-    craftsmanship: base.toFixed(1),
-    materialQuality: Math.max(3.8, Number((base - 0.1).toFixed(1))).toFixed(1),
-    finish: Math.max(3.8, Number((base - 0.2).toFixed(1))).toFixed(1),
-    overall: base.toFixed(1),
-  };
-};
-
 export const AIProductAnalyzerPage: React.FC = () => {
-  const { addProduct, currentUser, loginAsSeller } = useApp();
+  const { addProduct, currentUser } = useApp();
   const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -259,7 +237,8 @@ export const AIProductAnalyzerPage: React.FC = () => {
     if (!analysisResult || !selectedImage) return;
 
     if (!currentUser || currentUser.role !== 'seller') {
-      loginAsSeller();
+      navigate('/login');
+      return;
     }
 
     const newProd = addProduct({
@@ -304,7 +283,8 @@ export const AIProductAnalyzerPage: React.FC = () => {
   const handleEditBeforePublish = () => {
     if (!analysisResult) return;
     if (!currentUser || currentUser.role !== 'seller') {
-      loginAsSeller();
+      navigate('/login');
+      return;
     }
     navigate('/seller/products/new', {
       state: {
@@ -328,13 +308,19 @@ export const AIProductAnalyzerPage: React.FC = () => {
   };
 
   // Safe formatting helpers for Defensive Rendering
-  const qualityMetrics = getQualityMetrics(analysisResult?.qualityScore || 4.8);
+  const qualityAssessment = analysisResult?.qualityAssessment || {
+    craftsmanship: Number(Math.min(5, (analysisResult?.qualityScore || 4.8) + 0.1).toFixed(1)),
+    materialQuality: Number((analysisResult?.qualityScore || 4.8).toFixed(1)),
+    finish: Number(Math.max(3.8, (analysisResult?.qualityScore || 4.8) - 0.1).toFixed(1)),
+    designAesthetic: Number(Math.min(5, (analysisResult?.qualityScore || 4.8) + 0.1).toFixed(1)),
+    overall: Number((analysisResult?.qualityScore || 4.8).toFixed(1)),
+    explanation: 'Visual analysis confirms superior structural integrity, authentic hand tooling marks, balanced edge contours, and premium grade raw material composition.',
+  };
   const minPrice = analysisResult?.estimatedPriceMin || 750;
   const maxPrice = analysisResult?.estimatedPriceMax || 1200;
   const suggPrice = analysisResult?.suggestedPrice || 899;
   const dimensionsStr = analysisResult?.dimensions || `${analysisResult?.length || 25} × ${analysisResult?.width || 25} × ${analysisResult?.height || 4} cm`;
-  const craftWeight = getSensibleWeight(analysisResult?.material, analysisResult?.category);
-  const craftTechnique = analysisResult ? getCraftingTechnique(analysisResult) : 'Traditional Artisan Handcrafting';
+  const craftTechnique = analysisResult?.craftTechnique || (analysisResult ? getCraftingTechnique(analysisResult) : 'Traditional Artisan Handcrafting');
 
   return (
     <div className="min-h-screen bg-heritage-ivory py-8 px-4 sm:px-6 lg:px-8">
@@ -732,13 +718,16 @@ export const AIProductAnalyzerPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2 self-start sm:self-auto">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${
-                        isMockResult 
-                          ? 'bg-amber-100 text-amber-900 border-amber-300' 
-                          : 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                    <div className="flex flex-col sm:items-end gap-1">
+                      <span className={`text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full border self-start sm:self-auto ${
+                        analysisResult.isLiveAi || analysisResult.analysisSource === 'live_ai'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                          : 'bg-amber-100 text-amber-900 border-amber-300'
                       }`}>
-                        {isMockResult ? 'Demo Mode Engine' : 'Live Neural Vision'}
+                        {analysisResult.isLiveAi || analysisResult.analysisSource === 'live_ai' ? 'AI VISION ANALYSIS' : 'DEMO AI ANALYSIS'}
+                      </span>
+                      <span className="text-[10px] font-medium text-heritage-charcoal/70">
+                        Analyzed from uploaded image
                       </span>
                     </div>
                   </div>
@@ -753,15 +742,14 @@ export const AIProductAnalyzerPage: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Circular Confidence Gauge */}
-                  <ConfidenceGauge confidence={analysisResult.confidence || 94} />
-
-                  {/* SECTION 1: PRODUCT IDENTIFICATION */}
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2 border-b border-heritage-sand/60 pb-1.5">
-                      <span className="w-2 h-2 rounded-full bg-heritage-terracotta" />
-                      <h3 className="text-xs font-black text-heritage-brown uppercase tracking-wider">
-                        1. Product Identification
+                  {/* 01 PRODUCT IDENTIFICATION */}
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2 border-b border-heritage-sand/80 pb-2">
+                      <span className="text-xs font-black text-heritage-terracotta bg-heritage-terracotta/10 px-2 py-0.5 rounded">
+                        01
+                      </span>
+                      <h3 className="text-sm font-black text-heritage-brown uppercase tracking-wider">
+                        PRODUCT IDENTIFICATION
                       </h3>
                     </div>
 
@@ -772,31 +760,46 @@ export const AIProductAnalyzerPage: React.FC = () => {
                         className="sm:col-span-2"
                       />
                       <SpecField
-                        label="Category"
+                        label="Craft Category"
                         value={analysisResult.category || 'Handicraft'}
+                      />
+                      <SpecField
+                        label="Craft Type"
+                        value={analysisResult.craftType || analysisResult.model || 'Traditional Indian Craft'}
                       />
                       <SpecField
                         label="Material"
                         value={analysisResult.material || 'Natural Materials'}
                       />
                       <SpecField
-                        label="Craft Style"
-                        value={analysisResult.model || 'Traditional Indian Style'}
-                      />
-                      <SpecField
                         label="Craft Technique"
                         value={craftTechnique}
                       />
                     </div>
+
+                    {/* Circular Confidence Gauge */}
+                    <ConfidenceGauge confidence={analysisResult.confidence || 94} />
                   </div>
 
-                  {/* SECTION 2: VISUAL & PHYSICAL DETAILS */}
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center space-x-2 border-b border-heritage-sand/60 pb-1.5">
-                      <span className="w-2 h-2 rounded-full bg-heritage-terracotta" />
-                      <h3 className="text-xs font-black text-heritage-brown uppercase tracking-wider">
-                        2. Visual & Physical Details
+                  {/* 02 VISUAL & PHYSICAL DETAILS */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center space-x-2 border-b border-heritage-sand/80 pb-2">
+                      <span className="text-xs font-black text-heritage-terracotta bg-heritage-terracotta/10 px-2 py-0.5 rounded">
+                        02
+                      </span>
+                      <h3 className="text-sm font-black text-heritage-brown uppercase tracking-wider">
+                        VISUAL & PHYSICAL DETAILS
                       </h3>
+                    </div>
+
+                    {/* Visual Description */}
+                    <div className="p-3.5 rounded-2xl bg-heritage-ivory/60 border border-heritage-sand/80">
+                      <span className="text-[11px] font-bold text-heritage-charcoal/60 uppercase tracking-wider block mb-1">
+                        Visual Description
+                      </span>
+                      <p className="text-xs sm:text-sm font-semibold text-heritage-brown leading-relaxed">
+                        {analysisResult.visualDescription || analysisResult.descriptionSnippet || 'Artisan handcrafted item displaying authentic regional texture, balanced symmetry, and traditional styling.'}
+                      </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -805,35 +808,44 @@ export const AIProductAnalyzerPage: React.FC = () => {
                         value={analysisResult.primaryColor || 'Natural Earth Tone'}
                       />
                       <SpecField
-                        label="Accent Colors"
-                        value={analysisResult.secondaryColor || 'Traditional Accent'}
+                        label="Secondary Color"
+                        value={analysisResult.secondaryColor || 'Natural Accent'}
+                      />
+                      <SpecField
+                        label="Shape"
+                        value={analysisResult.shape || 'Sculptural Artisan Form'}
+                      />
+                      <SpecField
+                        label="Texture"
+                        value={analysisResult.texture || 'Hand-worked natural grain texture'}
                       />
                       <SpecField
                         label="Dimensions"
-                        badge="AI Estimated"
+                        badge="AI ESTIMATED"
                         value={dimensionsStr}
                       />
                       <SpecField
-                        label="Craft Weight"
-                        badge="AI Estimated"
-                        value={craftWeight}
+                        label="Craft Finish"
+                        value={analysisResult.craftFinish || 'Organic hand-buffed protective finish'}
                       />
                     </div>
                   </div>
 
-                  {/* SECTION 3: QUALITY ASSESSMENT */}
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between border-b border-heritage-sand/60 pb-1.5">
+                  {/* 03 QUALITY ASSESSMENT */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between border-b border-heritage-sand/80 pb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="w-2 h-2 rounded-full bg-heritage-terracotta" />
-                        <h3 className="text-xs font-black text-heritage-brown uppercase tracking-wider">
-                          3. Quality Assessment
+                        <span className="text-xs font-black text-heritage-terracotta bg-heritage-terracotta/10 px-2 py-0.5 rounded">
+                          03
+                        </span>
+                        <h3 className="text-sm font-black text-heritage-brown uppercase tracking-wider">
+                          QUALITY ASSESSMENT
                         </h3>
                       </div>
                       <div className="flex items-center space-x-1.5 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-300">
                         <Star className="w-4 h-4 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
                         <span className="text-xs font-black text-amber-900">
-                          Overall: {qualityMetrics.overall} / 5
+                          Overall: {qualityAssessment.overall} / 5
                         </span>
                       </div>
                     </div>
@@ -845,7 +857,7 @@ export const AIProductAnalyzerPage: React.FC = () => {
                         </span>
                         <div className="flex items-center space-x-1 font-black text-sm text-heritage-brown">
                           <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
-                          <span>{qualityMetrics.craftsmanship} / 5</span>
+                          <span>{qualityAssessment.craftsmanship} / 5</span>
                         </div>
                       </div>
 
@@ -855,7 +867,7 @@ export const AIProductAnalyzerPage: React.FC = () => {
                         </span>
                         <div className="flex items-center space-x-1 font-black text-sm text-heritage-brown">
                           <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
-                          <span>{qualityMetrics.materialQuality} / 5</span>
+                          <span>{qualityAssessment.materialQuality} / 5</span>
                         </div>
                       </div>
 
@@ -865,29 +877,37 @@ export const AIProductAnalyzerPage: React.FC = () => {
                         </span>
                         <div className="flex items-center space-x-1 font-black text-sm text-heritage-brown">
                           <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
-                          <span>{qualityMetrics.finish} / 5</span>
+                          <span>{qualityAssessment.finish} / 5</span>
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-100/80 to-amber-50 border border-amber-300">
-                        <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block mb-1">
-                          Overall Quality
+                      <div className="p-3.5 rounded-2xl bg-heritage-ivory/60 border border-heritage-sand/80">
+                        <span className="text-[11px] font-bold text-heritage-charcoal/60 uppercase tracking-wider block mb-1">
+                          Design / Aesthetic
                         </span>
-                        <div className="flex items-center space-x-1 font-black text-sm text-amber-950">
-                          <Star className="w-4 h-4 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
-                          <span>★ {qualityMetrics.overall} / 5</span>
+                        <div className="flex items-center space-x-1 font-black text-sm text-heritage-brown">
+                          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
+                          <span>{qualityAssessment.designAesthetic} / 5</span>
                         </div>
                       </div>
                     </div>
+
+                    {/* Quality Explanation */}
+                    <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 font-medium leading-relaxed">
+                      <strong className="font-bold text-amber-900 block mb-0.5">Quality Explanation:</strong>
+                      {qualityAssessment.explanation || 'Visual analysis confirms superior structural integrity, authentic hand tooling marks, balanced edge contours, and premium grade raw material composition.'}
+                    </div>
                   </div>
 
-                  {/* SECTION 4: FAIR MARKET APPRAISAL */}
-                  <div className="space-y-3 pt-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-heritage-sand/60 pb-1.5">
+                  {/* 04 FAIR MARKET APPRAISAL */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-heritage-sand/60 pb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="w-2 h-2 rounded-full bg-heritage-terracotta" />
-                        <h3 className="text-xs font-black text-heritage-brown uppercase tracking-wider">
-                          4. Fair Market Appraisal
+                        <span className="text-xs font-black text-heritage-terracotta bg-heritage-terracotta/10 px-2 py-0.5 rounded">
+                          04
+                        </span>
+                        <h3 className="text-sm font-black text-heritage-brown uppercase tracking-wider">
+                          FAIR MARKET APPRAISAL
                         </h3>
                       </div>
                       <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center space-x-1 self-start sm:self-auto">
@@ -903,7 +923,7 @@ export const AIProductAnalyzerPage: React.FC = () => {
                             Estimated Market Price
                           </span>
                           <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            AI Estimated
+                            AI ESTIMATED
                           </span>
                         </div>
                         <div className="text-xl sm:text-2xl font-black text-heritage-brown">
@@ -928,12 +948,25 @@ export const AIProductAnalyzerPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Cultural Significance / Craft Story */}
-                    <div className="p-3.5 bg-heritage-sand/20 rounded-2xl border border-heritage-sand/60">
-                      <p className="text-xs text-heritage-charcoal/80 font-medium italic leading-relaxed">
-                        "{analysisResult.culturalSignificance || 'Traditional Indian handicraft preserved across artisan generations, crafted using indigenous materials.'}"
+                    {/* WHY THIS PRICE? */}
+                    <div className="p-4 bg-heritage-ivory rounded-2xl border border-heritage-sand/90 space-y-1.5">
+                      <div className="flex items-center space-x-2 text-heritage-terracotta">
+                        <Sparkles className="w-4 h-4 text-heritage-terracotta shrink-0" aria-hidden="true" />
+                        <span className="text-xs font-black uppercase tracking-wider">WHY THIS PRICE?</span>
+                      </div>
+                      <p className="text-xs text-heritage-charcoal/80 font-medium leading-relaxed">
+                        {analysisResult.pricingReasoning || 'Price calculated by factoring in skilled artisan labor time, raw material purity, regional craft complexity, and Ministry of Textiles fair living wage benchmarks to guarantee ethical artisan remuneration.'}
                       </p>
                     </div>
+
+                    {/* Cultural Significance / Craft Story */}
+                    {analysisResult.culturalSignificance && (
+                      <div className="p-3.5 bg-heritage-sand/20 rounded-2xl border border-heritage-sand/60">
+                        <p className="text-xs text-heritage-charcoal/80 font-medium italic leading-relaxed">
+                          "{analysisResult.culturalSignificance}"
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {/* ACTION BUTTONS */}
@@ -962,7 +995,7 @@ export const AIProductAnalyzerPage: React.FC = () => {
                       className="w-full sm:w-auto px-5 py-3.5 rounded-2xl border-2 border-heritage-sand hover:bg-white text-heritage-charcoal font-bold text-xs transition flex items-center justify-center space-x-1.5 cursor-pointer"
                     >
                       <RefreshCw className="w-4 h-4" aria-hidden="true" />
-                      <span>Re-analyze</span>
+                      <span>Analyze Again</span>
                     </button>
                   </div>
                 </div>

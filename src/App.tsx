@@ -65,7 +65,11 @@ export const App: React.FC = () => {
               />
               <Route
                 path="/seller/ai-analyzer"
-                element={<AIProductAnalyzerPage />}
+                element={
+                  <RoleGuard allowedRole="seller">
+                    <AIProductAnalyzerPage />
+                  </RoleGuard>
+                }
               />
               <Route
                 path="/seller/products"
@@ -139,11 +143,19 @@ export const App: React.FC = () => {
               />
               <Route
                 path="/buyer/cart"
-                element={<CartPage />}
+                element={
+                  <RoleGuard allowedRole="buyer">
+                    <CartPage />
+                  </RoleGuard>
+                }
               />
               <Route
                 path="/buyer/checkout"
-                element={<CheckoutPage />}
+                element={
+                  <RoleGuard allowedRole="buyer">
+                    <CheckoutPage />
+                  </RoleGuard>
+                }
               />
               <Route
                 path="/buyer/orders"
@@ -155,7 +167,11 @@ export const App: React.FC = () => {
               />
               <Route
                 path="/buyer/wishlist"
-                element={<WishlistPage />}
+                element={
+                  <RoleGuard allowedRole="buyer">
+                    <WishlistPage />
+                  </RoleGuard>
+                }
               />
               <Route
                 path="/buyer/messages"

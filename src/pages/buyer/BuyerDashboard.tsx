@@ -57,7 +57,7 @@ export const BuyerDashboard: React.FC = () => {
             </h1>
 
             <p className="text-xs sm:text-sm text-heritage-sand/80 max-w-xl mx-auto font-medium">
-              Direct linkage to rural master craftspeople. Verified GI authenticity, AI dimensional appraisals, and transparent ethical pricing.
+              Direct linkage to rural master craftspeople. AI Recognized authenticity, AI dimensional appraisals, and transparent ethical pricing.
             </p>
 
             {/* Natural Language Craft Search */}

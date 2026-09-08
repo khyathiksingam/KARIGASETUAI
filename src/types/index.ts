@@ -94,23 +94,40 @@ export interface Product {
   created_at: string;
 }
 
+export interface QualityAssessment {
+  craftsmanship: number;
+  materialQuality: number;
+  finish: number;
+  designAesthetic: number;
+  overall: number;
+  explanation?: string;
+}
+
 export interface AIAnalysisResult {
   productName: string;
   category: string;
+  craftType?: string;
   material: string;
   model: string;
+  craftTechnique?: string;
   dimensions: string; // e.g. "28 × 12 × 8 cm"
   length: number;
   width: number;
   height: number;
   primaryColor: string;
   secondaryColor: string;
+  visualDescription?: string;
+  shape?: string;
+  texture?: string;
+  craftFinish?: string;
   qualityScore: number; // e.g. 4.5
   qualityStars: string;
+  qualityAssessment?: QualityAssessment;
   estimatedPriceMin: number;
   estimatedPriceMax: number;
   suggestedPrice: number;
   confidence: number; // e.g. 94
+  pricingReasoning?: string;
   descriptionSnippet: string;
   culturalSignificance?: string;
   craftingTechnique?: string;
@@ -118,6 +135,8 @@ export interface AIAnalysisResult {
   isHumanSubject?: boolean;
   isDocumentSubject?: boolean;
   rejectionReason?: string;
+  isLiveAi?: boolean;
+  analysisSource?: 'live_ai' | 'local_vision';
 }
 
 export type OrderStatus = 'ordered' | 'confirmed' | 'preparing' | 'shipped' | 'delivered';

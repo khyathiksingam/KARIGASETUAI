@@ -24,7 +24,7 @@ const FLOATING_CRAFTS: CraftItem3D[] = [
     depthOffset: 'translateZ(60px)',
     rotation: '-rotate-3',
     delay: 'animate-float-slow',
-    badge: 'GI Recognized',
+    badge: 'AI Recognized',
   },
   {
     id: 'pottery',

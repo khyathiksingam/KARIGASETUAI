@@ -67,15 +67,16 @@ export const LoginPage: React.FC = () => {
       if (from) {
         navigate(from, { replace: true });
       } else {
-        const idClean = identity.trim().toLowerCase();
-        if (idClean.includes('buyer') || idClean.includes('ananya')) {
-          navigate('/buyer/marketplace');
+        const savedUser = localStorage.getItem('karigarsetu_user');
+        const role = savedUser ? JSON.parse(savedUser).role : 'seller';
+        if (role === 'buyer') {
+          navigate('/buyer/dashboard');
         } else {
           navigate('/seller/dashboard');
         }
       }
     } else {
-      setErrorMsg('Invalid username or password. Please use the quick demo presets below.');
+      setErrorMsg('Invalid username/email or password.');
     }
   };
 

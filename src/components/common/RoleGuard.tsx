@@ -17,7 +17,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   const { currentUser, currentRole, isAuthenticated } = useApp();
   const location = useLocation();
 
-  if (requireAuth && !isAuthenticated) {
+  if (requireAuth && (!isAuthenticated || !currentUser)) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

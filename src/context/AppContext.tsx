@@ -22,6 +22,7 @@ import {
   INITIAL_MESSAGES,
   INITIAL_COUPONS,
 } from '../data/seedData';
+import { otpService } from '../services/otpService';
 
 interface AppContextType {
   currentUser: UserProfile | null;
@@ -97,6 +98,7 @@ const STORAGE_KEYS = {
   USER: 'karigarsetu_user',
   ROLE: 'karigarsetu_role',
   AUTH_SESSION: 'karigarsetu_auth_session_active_v2',
+  REGISTERED_USERS: 'karigarsetu_registered_users_v2',
   PRODUCTS: 'karigarsetu_products',
   CART: 'karigarsetu_cart',
   WISHLIST: 'karigarsetu_wishlist',
@@ -106,6 +108,34 @@ const STORAGE_KEYS = {
   MESSAGES: 'karigarsetu_messages',
   COUPONS: 'karigarsetu_coupons',
 };
+
+export interface RegisteredUserAccount {
+  id: string;
+  email: string;
+  username: string;
+  passwordHash: string;
+  role: UserRole;
+  profile: UserProfile;
+}
+
+const DEFAULT_ACCOUNTS: RegisteredUserAccount[] = [
+  {
+    id: DEMO_SELLERS[0].id,
+    email: 'ravi@ravicrafts.com',
+    username: 'ravicrafts',
+    passwordHash: 'Seller@123',
+    role: 'seller',
+    profile: DEMO_SELLERS[0],
+  },
+  {
+    id: DEMO_BUYER.id,
+    email: 'ananya.s@heritagearts.in',
+    username: 'ananyasharma',
+    passwordHash: 'Buyer@123',
+    role: 'buyer',
+    profile: DEMO_BUYER,
+  },
+];
 
 function getBadgeForCredits(credits: number): ArtisanBadge {
   if (credits >= 1600) return 'Master Karigar';
@@ -286,78 +316,158 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
   }, [messages]);
 
+  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUserAccount[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.REGISTERED_USERS);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse registered users:', e);
+      }
+    }
+    return DEFAULT_ACCOUNTS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(registeredUsers));
+  }, [registeredUsers]);
+
   // Auth actions
   const loginAsSeller = () => {
     const seller = DEMO_SELLERS[0]; // Ravi Kumar
     setCurrentUser(seller);
     setCurrentRole('seller');
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(seller));
+    localStorage.setItem(STORAGE_KEYS.ROLE, 'seller');
   };
 
   const loginAsBuyer = () => {
     const buyer = DEMO_BUYER; // Ananya Sharma
     setCurrentUser(buyer);
     setCurrentRole('buyer');
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(buyer));
+    localStorage.setItem(STORAGE_KEYS.ROLE, 'buyer');
   };
 
   const login = (identity: string, pass: string): boolean => {
-    const idClean = identity.trim().toLowerCase();
-    if (idClean === 'seller_demo' || idClean === 'ravi@ravicrafts.com' || idClean === 'ravicrafts') {
-      if (pass === 'Seller@123' || pass === '123456') {
-        loginAsSeller();
-        return true;
-      }
-    }
-    if (idClean === 'buyer_demo' || idClean === 'ananya.s@heritagearts.in' || idClean === 'ananyasharma') {
-      if (pass === 'Buyer@123' || pass === '123456') {
-        loginAsBuyer();
-        return true;
-      }
+    const cleanId = (identity || '').trim().toLowerCase();
+    const cleanPass = (pass || '').trim();
+
+    if (!cleanId || !cleanPass) {
+      return false;
     }
 
-    // Check custom saved users
-    if (currentUser && (currentUser.email.toLowerCase() === idClean || currentUser.username.toLowerCase() === idClean)) {
+    // Explicit demo identifiers (only with matching demo password)
+    if (cleanId === 'seller_demo' && (cleanPass === 'Seller@123' || cleanPass === '123456')) {
+      loginAsSeller();
       return true;
     }
 
-    // Default lenient demo authentication
-    if (pass.length >= 4) {
-      if (idClean.includes('seller') || idClean.includes('artisan')) {
-        loginAsSeller();
-        return true;
-      } else {
-        loginAsBuyer();
-        return true;
-      }
+    if (cleanId === 'buyer_demo' && (cleanPass === 'Buyer@123' || cleanPass === '123456')) {
+      loginAsBuyer();
+      return true;
     }
-    return false;
+
+    // Match against real registered user accounts
+    const account = registeredUsers.find(
+      (acc) =>
+        acc.email.toLowerCase() === cleanId ||
+        acc.username.toLowerCase() === cleanId ||
+        acc.profile.mobile.replace(/\D/g, '') === cleanId.replace(/\D/g, '')
+    );
+
+    if (!account) {
+      // Account does not exist -> strictly reject
+      return false;
+    }
+
+    // Verify password strictly
+    const isPasswordValid =
+      account.passwordHash === cleanPass ||
+      ((account.id === 'seller_1' || account.id === 'buyer_1') && cleanPass === '123456');
+
+    if (!isPasswordValid) {
+      // Wrong password -> strictly reject
+      return false;
+    }
+
+    // Authenticate and establish real session
+    setCurrentUser(account.profile);
+    setCurrentRole(account.role);
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(account.profile));
+    localStorage.setItem(STORAGE_KEYS.ROLE, account.role);
+    return true;
   };
 
   const verifyOtp = (contact: string, otp: string, role: UserRole): boolean => {
-    if (otp === '123456' || otp.length === 6) {
-      const isEmail = contact.includes('@');
-      let baseUser = role === 'seller' ? DEMO_SELLERS[0] : DEMO_BUYER;
-      
-      const userObj: UserProfile = {
-        ...baseUser,
-        email: isEmail ? contact : baseUser.email,
-        mobile: !isEmail ? contact : baseUser.mobile,
-      };
+    const cleanContact = (contact || '').trim().toLowerCase();
+    const cleanOtp = (otp || '').trim();
 
-      setCurrentUser(userObj);
-      setCurrentRole(role);
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userObj));
-      localStorage.setItem(STORAGE_KEYS.ROLE, role);
+    // Verify OTP against otpService
+    const isOtpValid = otpService.verify(cleanOtp);
+    if (!isOtpValid) {
+      return false;
+    }
+
+    // Check if user already exists
+    const existing = registeredUsers.find(
+      (acc) =>
+        acc.email.toLowerCase() === cleanContact ||
+        acc.profile.mobile.replace(/\D/g, '') === cleanContact.replace(/\D/g, '')
+    );
+
+    if (existing) {
+      setCurrentUser(existing.profile);
+      setCurrentRole(existing.role);
+      localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(existing.profile));
+      localStorage.setItem(STORAGE_KEYS.ROLE, existing.role);
       return true;
     }
-    return false;
+
+    // For new mobile/email user via OTP verification
+    const isEmail = cleanContact.includes('@');
+    const baseUser = role === 'seller' ? DEMO_SELLERS[0] : DEMO_BUYER;
+    const userObj: UserProfile = {
+      ...baseUser,
+      id: `user_${Date.now()}`,
+      email: isEmail ? cleanContact : `user_${Date.now()}@karigarsetu.ai`,
+      mobile: !isEmail ? cleanContact : baseUser.mobile,
+      role,
+    };
+
+    const newAccount: RegisteredUserAccount = {
+      id: userObj.id,
+      email: userObj.email,
+      username: userObj.username,
+      passwordHash: 'User@123',
+      role,
+      profile: userObj,
+    };
+
+    setRegisteredUsers((prev) => [...prev, newAccount]);
+    setCurrentUser(userObj);
+    setCurrentRole(role);
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userObj));
+    localStorage.setItem(STORAGE_KEYS.ROLE, role);
+    return true;
   };
 
   const signup = (userData: Partial<UserProfile> & { password?: string }, role: UserRole) => {
+    const userId = `user_${Date.now()}`;
+    const cleanPassword = userData.password ? userData.password.trim() : 'User@123';
     const newUser: UserProfile = {
-      id: `user_${Date.now()}`,
+      id: userId,
       full_name: userData.full_name || (role === 'seller' ? 'Shri Artisan' : 'Priya Patel'),
-      username: userData.username || `user_${Math.floor(Math.random() * 9000 + 1000)}`,
-      email: userData.email || 'artisan@karigarsetu.ai',
+      username: (userData.username || `user_${Math.floor(Math.random() * 9000 + 1000)}`).toLowerCase(),
+      email: (userData.email || `${userId}@karigarsetu.ai`).toLowerCase(),
       mobile: userData.mobile || '+91 98765 43210',
       profile_image: userData.profile_image || (role === 'seller' 
         ? '/avatars/ravi-kumar.jpg'
@@ -377,8 +487,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       created_at: new Date().toISOString(),
     };
 
+    const newAccount: RegisteredUserAccount = {
+      id: userId,
+      email: newUser.email,
+      username: newUser.username,
+      passwordHash: cleanPassword,
+      role: role,
+      profile: newUser,
+    };
+
+    setRegisteredUsers((prev) => [
+      ...prev.filter((u) => u.email.toLowerCase() !== newUser.email && u.username.toLowerCase() !== newUser.username),
+      newAccount,
+    ]);
+
     setCurrentUser(newUser);
     setCurrentRole(role);
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newUser));
+    localStorage.setItem(STORAGE_KEYS.ROLE, role);
 
     if (role === 'seller') {
       awardCredits(newUser.id, 20, 'profile_completed', 'Profile registration completed');

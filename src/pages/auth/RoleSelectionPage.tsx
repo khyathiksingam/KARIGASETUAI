@@ -146,7 +146,7 @@ export const RoleSelectionPage: React.FC = () => {
             <ul className="mt-5 space-y-2 text-xs text-heritage-charcoal/70 font-semibold border-t border-heritage-sand pt-4">
               <li className="flex items-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-heritage-gold mr-2" />
-                Verified authentic GI & handcrafted goods
+                AI-Recognized authentic & handcrafted goods
               </li>
               <li className="flex items-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-heritage-gold mr-2" />

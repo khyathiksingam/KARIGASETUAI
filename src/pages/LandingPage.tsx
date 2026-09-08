@@ -160,7 +160,7 @@ export const LandingPage: React.FC = () => {
                 Every product clearly identifies its seller with verifiable profile, craft lineage, state of origin, and customer reputation. No anonymous middlemen.
               </p>
               <span className="text-xs font-semibold text-heritage-green-light">
-                Verified GI & Heritage Profiles
+                Verified Artisan & Heritage Profiles
               </span>
             </div>
 
