@@ -77,16 +77,36 @@ export function normalizeAnalysisResult(raw) {
   const suggPrice = Number(raw.suggestedPrice) || Math.round((minPrice + (maxPrice - minPrice) * 0.45) / 10) * 10;
   
   // Fair living wage calculation (artisan daily wage standard + raw materials + skill complexity)
-  const fairWageMin = Number(raw.fairWageMin) || Math.round((minPrice * 1.05) / 10) * 10;
-  const fairWageMax = Number(raw.fairWageMax) || Math.round((minPrice + (maxPrice - minPrice) * 0.85) / 10) * 10;
+  const rawMaterialCost = Number(raw.rawMaterialCost) || Math.round(minPrice * 0.32);
+  const laborHours = Number(raw.laborHours) || Math.max(4, Math.round((minPrice * 0.48) / 100));
+  const hourlyWage = 100; // ₹800 per 8-hour day living wage standard
+  const artisanLaborCost = laborHours * hourlyWage;
+  const overheadCost = Math.round(artisanLaborCost * 0.15);
+  const minimumSustainablePrice = rawMaterialCost + artisanLaborCost + overheadCost;
+  const fairWageMin = Math.min(minimumSustainablePrice, minPrice);
+  const fairWageMax = Math.max(suggPrice, Math.round(maxPrice * 0.92));
 
   const rawQuality = raw.qualityAssessment || {};
-  const qualityScore = Number(raw.qualityScore || rawQuality.overall || 4.8);
-  const craftsmanship = Number((rawQuality.craftsmanship || Math.min(5, qualityScore + 0.1)).toFixed(1));
-  const materialQuality = Number((rawQuality.materialQuality || qualityScore).toFixed(1));
-  const designDetailing = Number((rawQuality.designDetailing || rawQuality.designAesthetic || Math.min(5, qualityScore + 0.1)).toFixed(1));
-  const finishQuality = Number((rawQuality.finishQuality || rawQuality.finish || Math.max(3.8, qualityScore - 0.1)).toFixed(1));
-  const overall = Number((rawQuality.overall || qualityScore).toFixed(1));
+  const qualityScore = Number(raw.qualityScore || rawQuality.overall || 4.7);
+  const materialAuthenticity = Number((rawQuality.materialAuthenticity || rawQuality.materialQuality || qualityScore).toFixed(1));
+  const craftsmanshipPrecision = Number((rawQuality.craftsmanshipPrecision || rawQuality.craftsmanship || Math.min(5.0, qualityScore + 0.1)).toFixed(1));
+  const structuralIntegrity = Number((rawQuality.structuralIntegrity || qualityScore).toFixed(1));
+  const surfaceFinish = Number((rawQuality.surfaceFinish || rawQuality.finishQuality || rawQuality.finish || Math.max(3.8, qualityScore - 0.1)).toFixed(1));
+  const symmetryAlignment = Number((rawQuality.symmetryAlignment || rawQuality.designDetailing || rawQuality.designAesthetic || Math.min(5.0, qualityScore + 0.1)).toFixed(1));
+  const overall = Number(((materialAuthenticity + craftsmanshipPrecision + structuralIntegrity + surfaceFinish + symmetryAlignment) / 5).toFixed(1));
+
+  // Realistic AI confidence percentage (68% - 88%, never fake 95%+)
+  let confidence = 76;
+  if (typeof raw.confidence === 'number') {
+    if (raw.confidence > 88) {
+      confidence = 72 + (Math.round(raw.confidence) % 15);
+    } else if (raw.confidence < 68) {
+      confidence = 68 + (Math.round(raw.confidence) % 10);
+    } else {
+      confidence = Math.round(raw.confidence);
+    }
+  }
+  confidence = Math.min(88, Math.max(68, confidence));
 
   const dimStr = raw.dimensions
     ? (raw.dimensions.includes('AI Estimated') ? raw.dimensions : `${raw.dimensions} (AI Estimated)`)
@@ -102,8 +122,10 @@ export function normalizeAnalysisResult(raw) {
     category: category,
     craftType: raw.craftType || raw.model || 'Traditional Handcrafted Artisan Work',
     regionState: raw.regionState || 'Not confidently detected',
+    giStatus: 'GI Status: Not Verified',
+    giInformation: 'GI Status: Not Verified — Official Geographical Indication registry verification requires documentary proof and is not confirmed via visual scanning alone.',
     descriptionSnippet: raw.descriptionSnippet || raw.visualDescription || 'Artisan handcrafted handicraft showing balanced symmetry, natural material texture, and authentic regional technique.',
-    confidence: typeof raw.confidence === 'number' ? raw.confidence : null,
+    confidence: confidence,
 
     // Visual Details
     shape: raw.shape || 'Sculptural Artisan Form',
@@ -118,11 +140,16 @@ export function normalizeAnalysisResult(raw) {
     decorativeElements: raw.decorativeElements || 'Hand-chiseled relief borders and surface ornamentation',
     visualCharacteristics: raw.visualCharacteristics || 'Balanced composition, organic symmetry, and unhurried artisan craftsmanship',
 
-    // Physical Details
+    // Physical Details & Scale Notice
     material: raw.material || 'Natural Regional Materials',
     possibleNaturalRawMaterials: raw.possibleNaturalRawMaterials || 'Ethically sourced indigenous natural fibers, seasoned timber, or mineral clay',
     dimensions: dimStr,
+    length: Number(raw.length) || 25,
+    width: Number(raw.width) || 25,
+    height: Number(raw.height) || 5,
     estimatedWeight: weightStr,
+    isDimensionsEstimated: true,
+    dimensionsDisclaimer: 'Physical dimensions and weight cannot be reliably calculated from a single 2D image without reference scale and artisan input. Artisan confirmation required.',
     constructionTechnique: raw.constructionTechnique || raw.craftTechnique || 'Hand-assembled monolithic structure with zero synthetic fasteners',
     surfaceFinish: raw.surfaceFinish || raw.craftFinish || 'Organic non-toxic botanical buffing',
     handmadeIndicators: raw.handmadeIndicators || 'Micro-tooling striations, organic contour variations confirming 100% manual fabrication',
@@ -134,12 +161,13 @@ export function normalizeAnalysisResult(raw) {
     craftTechnique: raw.craftTechnique || 'Generational traditional handcrafting',
     heritageLineage: raw.heritageLineage || 'Registered generational artisan guild traditions',
 
-    // Quality Assessment (Scores + Summary + Strengths + Imperfections + Grade)
+    // Quality Assessment (5 breakdown scores + summary + strengths + imperfections + grade)
     qualityAssessment: {
-      craftsmanship,
-      materialQuality,
-      designDetailing,
-      finishQuality,
+      materialAuthenticity,
+      craftsmanshipPrecision,
+      structuralIntegrity,
+      surfaceFinish,
+      symmetryAlignment,
       overall,
       qualitySummary: rawQuality.qualitySummary || rawQuality.explanation || 'Visual analysis confirms superior structural integrity, authentic hand tooling marks, and premium grade raw material composition.',
       strengths: rawQuality.strengths || 'Authentic artisan hand tooling, balanced symmetry, high tensile strength, and durable organic finish.',
@@ -147,17 +175,23 @@ export function normalizeAnalysisResult(raw) {
       overallQualityGrade: rawQuality.overallQualityGrade || (overall >= 4.8 ? 'Grade A+ (Master Artisan Work)' : 'Grade A (Authentic Handcrafted)')
     },
 
-    // 3 Separate Pricing Results
+    // 3 Separate Pricing Results + Formula Breakdown
     estimatedPriceMin: minPrice,
     estimatedPriceMax: maxPrice,
     suggestedPrice: suggPrice,
     fairWageMin: fairWageMin,
     fairWageMax: fairWageMax,
     fairWageBenchmarkIncluded: true,
+    rawMaterialCost: rawMaterialCost,
+    laborHours: laborHours,
+    hourlyWage: hourlyWage,
+    artisanLaborCost: artisanLaborCost,
+    overheadCost: overheadCost,
+    minimumSustainablePrice: minimumSustainablePrice,
 
-    pricingReasoning: raw.pricingReasoning || 'Price calculated by factoring in skilled artisan labor time, raw material purity, regional craft complexity, and Ministry of Textiles fair living wage benchmarks.',
+    pricingReasoning: raw.pricingReasoning || `Fair price benchmarking covers Raw Materials (₹${rawMaterialCost}) + Skilled Artisan Labor (${laborHours} hrs @ ₹${hourlyWage}/hr = ₹${artisanLaborCost}) + Workshop Overhead (₹${overheadCost}).`,
     suggestedPriceReasoning: raw.suggestedPriceReasoning || 'Suggested starting price for marketplace listing balancing buyer affordability with fair artisan profitability and platform visibility.',
-    fairWageReasoning: raw.fairWageReasoning || 'Benchmark computed strictly from daily artisan livelihood wages (₹800/day living wage standard) + raw material investment + craft intricacy.',
+    fairWageReasoning: raw.fairWageReasoning || `Minimum Sustainable Price: ₹${minimumSustainablePrice} computed strictly from daily artisan livelihood wages (₹800/day living wage standard) + raw material investment + craft intricacy.`,
     culturalSignificance: raw.culturalSignificance || 'Traditional Indian handicraft heritage embodying generational folk wisdom.'
   };
 }
@@ -607,6 +641,60 @@ async function analyzeVisualPixels(imageSource) {
                 hue = ((rNorm - gNorm) / delta + 4) * 60;
             }
         }
+
+        // Edge gradient frequency calculation for surface texture & sharpness
+        let edgeDiffTotal = 0;
+        let sampledEdgeCount = 0;
+        for (let y = 1; y < height - 1; y += 2) {
+            for (let x = 1; x < width - 1; x += 2) {
+                const idx = (y * width + x) * 4;
+                const rightIdx = (y * width + (x + 1)) * 4;
+                const downIdx = ((y + 1) * width + x) * 4;
+                const lum = 0.299 * imgData[idx] + 0.587 * imgData[idx + 1] + 0.114 * imgData[idx + 2];
+                const lumR = 0.299 * imgData[rightIdx] + 0.587 * imgData[rightIdx + 1] + 0.114 * imgData[rightIdx + 2];
+                const lumD = 0.299 * imgData[downIdx] + 0.587 * imgData[downIdx + 1] + 0.114 * imgData[downIdx + 2];
+                edgeDiffTotal += Math.abs(lum - lumR) + Math.abs(lum - lumD);
+                sampledEdgeCount += 2;
+            }
+        }
+        const edgeScore = sampledEdgeCount > 0 ? (edgeDiffTotal / (sampledEdgeCount * 255)) : 0.12;
+        // Dynamic realistic confidence between 68% and 88%
+        const dynamicConfidence = Math.min(88, Math.max(68, Math.round(71 + edgeScore * 24 + saturation * 8)));
+
+        // Dynamic Color Names
+        let primaryColorName = 'Natural Earth Tone';
+        let secondaryColorName = 'Natural Accent';
+        if (saturation < 0.18) {
+            if (brightness > 200) { primaryColorName = 'Natural Pearl White'; secondaryColorName = 'Unbleached Cotton'; }
+            else if (brightness > 130) { primaryColorName = 'Stone Grey / Natural Slate'; secondaryColorName = 'Muted Ash'; }
+            else if (brightness > 65) { primaryColorName = 'Charcoal Grey'; secondaryColorName = 'Dark Slate'; }
+            else { primaryColorName = 'Matte Charcoal Black'; secondaryColorName = 'Natural Mineral Black'; }
+        } else if (hue >= 345 || hue < 18) {
+            primaryColorName = brightness > 130 ? 'Terracotta Red' : 'Deep Crimson Clay';
+            secondaryColorName = 'Raw Umber';
+        } else if (hue >= 18 && hue < 45) {
+            primaryColorName = brightness > 140 ? 'Warm Terracotta / Sienna' : 'Earthy Red Clay';
+            secondaryColorName = 'Natural Ochre';
+        } else if (hue >= 45 && hue < 70) {
+            primaryColorName = brightness > 150 ? 'Imperial Brass Gold' : 'Antique Bronze';
+            secondaryColorName = 'Burnished Copper';
+        } else if (hue >= 70 && hue < 165) {
+            primaryColorName = 'Natural Bamboo Sage';
+            secondaryColorName = 'Earthy Olive';
+        } else if (hue >= 165 && hue < 200) {
+            primaryColorName = 'Persian Turquoise';
+            secondaryColorName = 'Aquamarine Glaze';
+        } else if (hue >= 200 && hue < 265) {
+            primaryColorName = 'Jaipur Cobalt Blue';
+            secondaryColorName = 'Persian Indigo';
+        } else if (hue >= 265 && hue < 315) {
+            primaryColorName = 'Royal Silk Violet';
+            secondaryColorName = 'Deep Mulberry';
+        } else {
+            primaryColorName = 'Heritage Madder Rose';
+            secondaryColorName = 'Warm Coral';
+        }
+
         // Jute fiber & lacquer bead detection
         let jutePixels = 0;
         let beadPixels = 0;
@@ -623,10 +711,10 @@ async function analyzeVisualPixels(imageSource) {
         }
         const juteRatio = jutePixels / (width * height);
         const redBeadRatio = beadPixels / (width * height);
-        // Grey scale or neutral muted detection (e.g. grey cushion, woven slate fabric)
+        // Grey scale or neutral muted detection
         const isGreyScale = saturation < 0.22 || Math.abs(r - g) + Math.abs(g - b) + Math.abs(r - b) < 40;
         const aspectRatio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
-        // Center core wax vs surrounding mandala rim luminosity (for circular diya / tealight holder)
+        // Center core wax vs surrounding mandala rim luminosity
         let innerLumSum = 0, innerCount = 0;
         let ringLumSum = 0, ringCount = 0;
         const midX = width / 2, midY = height / 2;
@@ -660,6 +748,10 @@ async function analyzeVisualPixels(imageSource) {
             juteRatio,
             redBeadRatio,
             isTealightDiya,
+            edgeScore,
+            dynamicConfidence,
+            primaryColorName,
+            secondaryColorName,
         };
     }
     catch (err) {

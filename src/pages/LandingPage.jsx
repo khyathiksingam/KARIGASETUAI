@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Scan, TrendingUp, UserCheck, ShoppingBag, Award, Compass, ArrowRight, ChevronRight, MapPin, Star } from 'lucide-react';
+import { Sparkles, Scan, TrendingUp, UserCheck, ShoppingBag, Award, Compass, ArrowRight, ChevronRight, MapPin, Star, PlusCircle } from 'lucide-react';
 import { FloatingCraftHero3D } from '../components/3d/FloatingCraftHero3D';
 import { ProductCard3D } from '../components/3d/ProductCard3D';
 import { useApp } from '../context/AppContext';
@@ -298,14 +298,35 @@ export const LandingPage = () => {
               </h2>
             </div>
             <Link to="/marketplace" className="mt-3 sm:mt-0 text-sm font-bold text-heritage-terracotta hover:text-heritage-terracotta-dark flex items-center">
-              <span>View All 20+ Masterpieces</span>
+              <span>{products.length > 0 ? `View All (${products.length})` : 'Browse Marketplace'}</span>
               <ChevronRight className="w-4 h-4 ml-0.5"/>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((prod) => (<ProductCard3D key={prod.id} product={prod}/>))}
-          </div>
+          {featuredProducts.length === 0 ? (
+            <div className="bg-heritage-ivory/50 rounded-3xl p-10 text-center border-2 border-dashed border-heritage-terracotta/25 space-y-3">
+              <Sparkles className="w-10 h-10 text-heritage-terracotta/70 mx-auto" />
+              <h3 className="font-serif font-black text-lg text-heritage-brown">
+                No artisan products listed yet. Be the first artisan to add a craft.
+              </h3>
+              <p className="text-xs text-heritage-charcoal/70 max-w-md mx-auto">
+                Artisans can list their heritage creations with AI-powered multi-angle evaluation, fair pricing appraisal, and instant certification.
+              </p>
+              <div className="pt-2">
+                <Link
+                  to="/seller/ai-analyzer"
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white rounded-xl text-xs font-bold shadow-md transition cursor-pointer"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>List Your Craft</span>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredProducts.map((prod) => (<ProductCard3D key={prod.id} product={prod}/>))}
+            </div>
+          )}
         </div>
       </section>
 

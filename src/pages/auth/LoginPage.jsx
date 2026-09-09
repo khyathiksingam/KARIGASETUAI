@@ -52,6 +52,10 @@ export const LoginPage = () => {
     const handlePasswordLogin = (e) => {
         e.preventDefault();
         setErrorMsg('');
+        if (!identity.trim() || !password.trim()) {
+            setErrorMsg('Please enter both username/email and password.');
+            return;
+        }
         const success = login(identity, password);
         if (success) {
             if (rememberMe) {
@@ -76,7 +80,7 @@ export const LoginPage = () => {
             }
         }
         else {
-            setErrorMsg('Invalid username/email or password.');
+            setErrorMsg('Invalid email/username or password.');
         }
     };
     const handleSendOtp = (e) => {
@@ -121,7 +125,7 @@ export const LoginPage = () => {
                 }
             }
             else {
-                setErrorMsg('Authentication failed. Please retry or use demo presets.');
+                setErrorMsg('Authentication failed. Please check your verification code.');
             }
         }
         else {
@@ -129,15 +133,7 @@ export const LoginPage = () => {
         }
     };
     const handleGoogleLogin = () => {
-        const dest = location.state?.from?.pathname;
-        if (selectedRole === 'seller') {
-            loginAsSeller();
-            navigate(dest || '/seller/dashboard');
-        }
-        else {
-            loginAsBuyer();
-            navigate(dest || '/buyer/marketplace');
-        }
+        setErrorMsg('Google OAuth requires production domain configuration. Please sign in with your email/username and password options above.');
     };
     return (<div className="min-h-screen bg-heritage-ivory bg-heritage-pattern flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto w-full">
@@ -162,47 +158,66 @@ export const LoginPage = () => {
           </p>
         </div>
 
-        {/* SECTION 42: SIH Judge Quick Demo Presets */}
-        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-heritage-sand/80 via-white to-heritage-sand/80 border-2 border-heritage-gold/60 shadow-md">
-          <p className="text-xs font-bold text-heritage-brown text-center mb-3 flex items-center justify-center">
-            <Shield className="w-3.5 h-3.5 mr-1.5 text-heritage-terracotta"/>
-            <span>Instant Demo Access for SIH 2026 Evaluators</span>
+        {/* SIH 2026 Test Credentials Card (No Instant Login Bypass) */}
+        <div className="mb-6 p-4 rounded-2xl bg-white border-2 border-heritage-terracotta/20 shadow-md">
+          <div className="flex items-center space-x-2 mb-2">
+            <Shield className="w-4 h-4 text-heritage-terracotta" />
+            <span className="text-xs font-black text-heritage-brown uppercase tracking-wider">
+              SIH 2026 Evaluator Test Accounts
+            </span>
+          </div>
+          <p className="text-[11px] text-heritage-charcoal/70 mb-3 leading-relaxed">
+            Click below to populate credentials into the form, then click <strong>Sign In</strong> to verify via SHA-256:
           </p>
-          <div className="grid grid-cols-2 gap-3">
-            <button type="button" onClick={() => {
-            loginAsSeller();
-            if (rememberMe) {
-                localStorage.setItem('karigarsetu_remembered_identity', 'seller_demo');
-            }
-            const dest = location.state?.from?.pathname || '/seller/dashboard';
-            navigate(dest);
-        }} className="p-3 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group cursor-pointer">
-              <Avatar src="/avatars/ravi-kumar.jpg" name="Ravi Kumar" role="seller" size="sm" className="border-white/40 group-hover:scale-105 transition-transform shrink-0"/>
-              <div className="min-w-0">
-                <span className="block leading-tight font-black">Try Seller Demo</span>
-                <span className="text-[10px] font-normal text-white/80 truncate block">Ravi Kumar (Artisan)</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-3 rounded-xl bg-heritage-ivory/80 border border-heritage-sand flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 mb-1.5">
+                  <Avatar src="/avatars/ravi-kumar.jpg" name="Ravi Kumar" role="seller" size="xs" />
+                  <span className="text-xs font-bold text-heritage-brown">Artisan / Seller</span>
+                </div>
+                <p className="text-[11px] text-heritage-charcoal font-mono">ravi@ravicrafts.com</p>
+                <p className="text-[10px] text-heritage-charcoal/60 font-mono">Pass: Seller@123</p>
               </div>
-            </button>
-            <button type="button" onClick={() => {
-            loginAsBuyer();
-            if (rememberMe) {
-                localStorage.setItem('karigarsetu_remembered_identity', 'buyer_demo');
-            }
-            const dest = location.state?.from?.pathname || '/buyer/marketplace';
-            navigate(dest);
-        }} className="p-3 rounded-2xl bg-heritage-brown hover:bg-heritage-brown-dark text-heritage-gold-light text-xs font-bold shadow-sm hover:shadow-md transition flex items-center space-x-2.5 text-left group cursor-pointer">
-              <Avatar src="/avatars/ananya-sharma.jpg" name="Ananya Sharma" role="buyer" size="sm" className="border-heritage-gold/40 group-hover:scale-105 transition-transform shrink-0"/>
-              <div className="min-w-0">
-                <span className="block leading-tight font-black text-white">Try Buyer Demo</span>
-                <span className="text-[10px] font-normal text-heritage-sand/80 truncate block">Ananya Sharma (Patron)</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setIdentity('ravi@ravicrafts.com');
+                  setPassword('Seller@123');
+                  setErrorMsg('');
+                }}
+                className="mt-2.5 w-full py-1.5 text-[11px] font-bold text-white bg-heritage-terracotta hover:bg-heritage-terracotta-dark rounded-lg transition shadow-xs cursor-pointer"
+              >
+                Fill Artisan Credentials
+              </button>
+            </div>
+
+            <div className="p-3 rounded-xl bg-heritage-ivory/80 border border-heritage-sand flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 mb-1.5">
+                  <Avatar src="/avatars/ananya-sharma.jpg" name="Ananya Sharma" role="buyer" size="xs" />
+                  <span className="text-xs font-bold text-heritage-brown">Buyer / Patron</span>
+                </div>
+                <p className="text-[11px] text-heritage-charcoal font-mono">ananya.s@heritagearts.in</p>
+                <p className="text-[10px] text-heritage-charcoal/60 font-mono">Pass: Buyer@123</p>
               </div>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIdentity('ananya.s@heritagearts.in');
+                  setPassword('Buyer@123');
+                  setErrorMsg('');
+                }}
+                className="mt-2.5 w-full py-1.5 text-[11px] font-bold text-heritage-gold-light bg-heritage-brown hover:bg-heritage-brown-dark rounded-lg transition shadow-xs cursor-pointer"
+              >
+                Fill Buyer Credentials
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Main Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-heritage-terracotta/20 shadow-3d">
-          {/* Method Tabs */}
           <div className="flex border-b border-heritage-sand pb-4 mb-6">
             <button type="button" onClick={() => {
             setAuthMethod('credentials');

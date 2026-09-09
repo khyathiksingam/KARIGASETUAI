@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, SlidersHorizontal, X, Layers } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Search, Filter, SlidersHorizontal, X, Layers, Sparkles, PlusCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ProductCard3D } from '../../components/3d/ProductCard3D';
 import { CRAFT_CATEGORIES } from '../../data/seedData';
+
 export const MarketplacePage = () => {
     const { products } = useApp();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,52 +18,55 @@ export const MarketplacePage = () => {
     const [maxPrice, setMaxPrice] = useState(20000);
     const [sortBy, setSortBy] = useState('recommended');
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+
     // Extract unique materials & states from products
     const materials = useMemo(() => {
         return ['all', ...Array.from(new Set(products.map((p) => p.material)))];
     }, [products]);
+
     const states = useMemo(() => {
         return ['all', ...Array.from(new Set(products.map((p) => p.state)))];
     }, [products]);
-    // Comprehensive Search & Multi-Filter (Section 24)
+
+    // Comprehensive Search & Multi-Filter
     const filteredProducts = useMemo(() => {
         return products
             .filter((p) => {
-            // Search by product name, seller, material, category, location, color
-            const q = search.toLowerCase().trim();
-            const matchesSearch = !q ||
-                p.name.toLowerCase().includes(q) ||
-                p.seller.full_name.toLowerCase().includes(q) ||
-                p.seller.username.toLowerCase().includes(q) ||
-                p.material.toLowerCase().includes(q) ||
-                p.category.toLowerCase().includes(q) ||
-                p.city.toLowerCase().includes(q) ||
-                p.state.toLowerCase().includes(q) ||
-                p.primary_color.toLowerCase().includes(q);
-            const matchesCat = selectedCategory === 'all' || p.category.toLowerCase() === selectedCategory.toLowerCase();
-            const matchesMat = selectedMaterial === 'all' || p.material === selectedMaterial;
-            const matchesState = selectedState === 'all' || p.state === selectedState;
-            const matchesRating = selectedRating === 0 || p.rating >= selectedRating;
-            const matchesPrice = p.price <= maxPrice;
-            return matchesSearch && matchesCat && matchesMat && matchesState && matchesRating && matchesPrice;
-        })
+                const q = search.toLowerCase().trim();
+                const matchesSearch = !q ||
+                    p.name.toLowerCase().includes(q) ||
+                    (p.seller && p.seller.full_name && p.seller.full_name.toLowerCase().includes(q)) ||
+                    (p.seller && p.seller.username && p.seller.username.toLowerCase().includes(q)) ||
+                    (p.material && p.material.toLowerCase().includes(q)) ||
+                    (p.category && p.category.toLowerCase().includes(q)) ||
+                    (p.city && p.city.toLowerCase().includes(q)) ||
+                    (p.state && p.state.toLowerCase().includes(q)) ||
+                    (p.primary_color && p.primary_color.toLowerCase().includes(q));
+                const matchesCat = selectedCategory === 'all' || (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
+                const matchesMat = selectedMaterial === 'all' || p.material === selectedMaterial;
+                const matchesState = selectedState === 'all' || p.state === selectedState;
+                const matchesRating = selectedRating === 0 || p.rating >= selectedRating;
+                const matchesPrice = p.price <= maxPrice;
+                return matchesSearch && matchesCat && matchesMat && matchesState && matchesRating && matchesPrice;
+            })
             .sort((a, b) => {
-            if (sortBy === 'newest') {
-                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-            }
-            if (sortBy === 'price_low') {
-                return a.price - b.price;
-            }
-            if (sortBy === 'price_high') {
-                return b.price - a.price;
-            }
-            if (sortBy === 'rating') {
-                return b.rating - a.rating;
-            }
-            // Recommended default
-            return b.quality_score - a.quality_score;
-        });
+                if (sortBy === 'newest') {
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                }
+                if (sortBy === 'price_low') {
+                    return a.price - b.price;
+                }
+                if (sortBy === 'price_high') {
+                    return b.price - a.price;
+                }
+                if (sortBy === 'rating') {
+                    return b.rating - a.rating;
+                }
+                // Recommended default
+                return (b.quality_score || 4.5) - (a.quality_score || 4.5);
+            });
     }, [products, search, selectedCategory, selectedMaterial, selectedState, selectedRating, maxPrice, sortBy]);
+
     const resetFilters = () => {
         setSearch('');
         setSelectedCategory('all');
@@ -72,6 +76,7 @@ export const MarketplacePage = () => {
         setMaxPrice(20000);
         setSortBy('recommended');
     };
+
     return (<div className="min-h-screen bg-heritage-ivory py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Top Header */}
@@ -111,11 +116,11 @@ export const MarketplacePage = () => {
         {/* Controls Bar: Sort and Filter Trigger */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-heritage-sand shadow-sm">
           <div className="flex items-center space-x-3 w-full sm:w-auto">
-            <button onClick={() => setFilterDrawerOpen(!filterDrawerOpen)} className="px-3 py-1.5 rounded-xl bg-heritage-sand/60 hover:bg-heritage-sand text-xs font-bold text-heritage-brown flex items-center space-x-1.5 transition">
+            <button onClick={() => setFilterDrawerOpen(!filterDrawerOpen)} className="px-3 py-1.5 rounded-xl bg-heritage-sand/60 hover:bg-heritage-sand text-xs font-bold text-heritage-brown flex items-center space-x-1.5 transition cursor-pointer">
               <SlidersHorizontal className="w-3.5 h-3.5 text-heritage-terracotta"/>
               <span>Filter Crafts</span>
             </button>
-            {(selectedCategory !== 'all' || selectedMaterial !== 'all' || selectedState !== 'all' || selectedRating > 0 || maxPrice < 20000 || search) && (<button onClick={resetFilters} className="text-[11px] font-bold text-heritage-terracotta hover:underline">
+            {(selectedCategory !== 'all' || selectedMaterial !== 'all' || selectedState !== 'all' || selectedRating > 0 || maxPrice < 20000 || search) && (<button onClick={resetFilters} className="text-[11px] font-bold text-heritage-terracotta hover:underline cursor-pointer">
                 Clear All Filters
               </button>)}
           </div>
@@ -125,7 +130,7 @@ export const MarketplacePage = () => {
             <span className="text-xs text-heritage-charcoal/60 font-semibold whitespace-nowrap">
               Sort by:
             </span>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-3 py-1.5 rounded-xl border border-heritage-sand bg-heritage-ivory/40 text-xs font-bold text-heritage-brown focus:border-heritage-terracotta outline-none">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-3 py-1.5 rounded-xl border border-heritage-sand bg-heritage-ivory/40 text-xs font-bold text-heritage-brown focus:border-heritage-terracotta outline-none cursor-pointer">
               <option value="recommended">Recommended (AI Quality)</option>
               <option value="newest">Newest Additions</option>
               <option value="price_low">Price: Low to High</option>
@@ -142,7 +147,7 @@ export const MarketplacePage = () => {
                 <Filter className="w-4 h-4 mr-1.5 text-heritage-terracotta"/>
                 Refine Craft Specifications
               </h3>
-              <button onClick={() => setFilterDrawerOpen(false)} className="text-xs text-heritage-charcoal/60 hover:text-heritage-brown">
+              <button onClick={() => setFilterDrawerOpen(false)} className="text-xs text-heritage-charcoal/60 hover:text-heritage-brown cursor-pointer">
                 Close Filters
               </button>
             </div>
@@ -195,8 +200,30 @@ export const MarketplacePage = () => {
             </div>
           </div>)}
 
-        {/* 3D Product Grid (Section 23 & 33) */}
-        {filteredProducts.length === 0 ? (<div className="bg-white rounded-3xl p-16 text-center border border-heritage-sand space-y-3">
+        {/* 3D Product Grid */}
+        {products.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 sm:p-16 text-center border-2 border-dashed border-heritage-terracotta/30 space-y-4 max-w-2xl mx-auto my-8">
+            <div className="w-16 h-16 rounded-full bg-heritage-terracotta/10 text-heritage-terracotta flex items-center justify-center mx-auto">
+              <Sparkles className="w-8 h-8" />
+            </div>
+            <h3 className="font-serif font-black text-xl text-heritage-brown">
+              No artisan products listed yet. Be the first artisan to add a craft.
+            </h3>
+            <p className="text-xs sm:text-sm text-heritage-charcoal/70 max-w-md mx-auto leading-relaxed">
+              Use our AI Product Analyzer to appraise and list your authentic handcrafted masterpiece with automated pricing and quality certification.
+            </p>
+            <div className="pt-2">
+              <Link
+                to="/seller/ai-analyzer"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-heritage-terracotta hover:bg-heritage-terracotta-dark text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition cursor-pointer"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>List Your Craft</span>
+              </Link>
+            </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="bg-white rounded-3xl p-16 text-center border border-heritage-sand space-y-3">
             <Layers className="w-12 h-12 text-heritage-charcoal/40 mx-auto"/>
             <h3 className="font-serif font-bold text-lg text-heritage-brown">
               No matching handicrafts found.
@@ -204,12 +231,15 @@ export const MarketplacePage = () => {
             <p className="text-xs text-heritage-charcoal/60">
               Try adjusting your search terms, price limit, or category filter.
             </p>
-            <button onClick={resetFilters} className="px-4 py-2 bg-heritage-terracotta text-white rounded-xl text-xs font-bold shadow-sm">
+            <button onClick={resetFilters} className="px-4 py-2 bg-heritage-terracotta text-white rounded-xl text-xs font-bold shadow-sm cursor-pointer">
               Reset All Filters
             </button>
-          </div>) : (<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredProducts.map((prod) => (<ProductCard3D key={prod.id} product={prod}/>))}
-          </div>)}
+          </div>
+        )}
       </div>
     </div>);
 };

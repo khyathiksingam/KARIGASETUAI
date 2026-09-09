@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
@@ -61,5 +61,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-.DS_Store
-Thumbs.db
+# Temporary scratch scripts & backups
+scratch/
+*.bak

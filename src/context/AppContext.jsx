@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DEMO_SELLERS, DEMO_BUYER, INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_CREDIT_TRANSACTIONS, INITIAL_REVIEWS, INITIAL_MESSAGES, INITIAL_COUPONS, } from '../data/seedData';
+import { DEMO_SELLERS, DEMO_BUYER, INITIAL_ORDERS, INITIAL_CREDIT_TRANSACTIONS, INITIAL_REVIEWS, INITIAL_MESSAGES, INITIAL_COUPONS, } from '../data/seedData';
 import { otpService } from '../services/otpService';
+import { hashPassword, verifyPassword } from '../services/hashUtils';
 const AppContext = createContext(undefined);
 const STORAGE_KEYS = {
     USER: 'karigarsetu_user',
@@ -21,7 +22,7 @@ const DEFAULT_ACCOUNTS = [
         id: DEMO_SELLERS[0].id,
         email: 'ravi@ravicrafts.com',
         username: 'ravicrafts',
-        passwordHash: 'Seller@123',
+        passwordHash: hashPassword('Seller@123'),
         role: 'seller',
         profile: DEMO_SELLERS[0],
     },
@@ -29,7 +30,7 @@ const DEFAULT_ACCOUNTS = [
         id: DEMO_BUYER.id,
         email: 'ananya.s@heritagearts.in',
         username: 'ananyasharma',
-        passwordHash: 'Buyer@123',
+        passwordHash: hashPassword('Buyer@123'),
         role: 'buyer',
         profile: DEMO_BUYER,
     },
@@ -76,13 +77,16 @@ export const AppProvider = ({ children }) => {
         const saved = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
         if (saved) {
             try {
-                return JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    return parsed;
+                }
             }
             catch (e) {
                 console.error(e);
             }
         }
-        return INITIAL_PRODUCTS;
+        return []; // Clean artisan marketplace by default
     });
     const [cart, setCart] = useState(() => {
         const saved = localStorage.getItem(STORAGE_KEYS.CART);
@@ -106,7 +110,7 @@ export const AppProvider = ({ children }) => {
                 console.error(e);
             }
         }
-        return ['prod_1', 'prod_4'];
+        return [];
     });
     const [orders, setOrders] = useState(() => {
         const saved = localStorage.getItem(STORAGE_KEYS.ORDERS);
@@ -213,7 +217,12 @@ export const AppProvider = ({ children }) => {
             try {
                 const parsed = JSON.parse(saved);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    return parsed;
+                    return parsed.map((acc) => ({
+                        ...acc,
+                        passwordHash: acc.passwordHash && acc.passwordHash.length === 64
+                            ? acc.passwordHash
+                            : hashPassword(acc.passwordHash || 'User@123')
+                    }));
                 }
             }
             catch (e) {
@@ -248,26 +257,20 @@ export const AppProvider = ({ children }) => {
         if (!cleanId || !cleanPass) {
             return false;
         }
-        // Explicit demo identifiers (only with matching demo password)
-        if (cleanId === 'seller_demo' && (cleanPass === 'Seller@123' || cleanPass === '123456')) {
-            loginAsSeller();
-            return true;
-        }
-        if (cleanId === 'buyer_demo' && (cleanPass === 'Buyer@123' || cleanPass === '123456')) {
-            loginAsBuyer();
-            return true;
-        }
-        // Match against real registered user accounts
-        const account = registeredUsers.find((acc) => acc.email.toLowerCase() === cleanId ||
+        // Match against real registered user accounts or demo aliases
+        const account = registeredUsers.find((acc) => 
+            acc.email.toLowerCase() === cleanId ||
             acc.username.toLowerCase() === cleanId ||
-            acc.profile.mobile.replace(/\D/g, '') === cleanId.replace(/\D/g, ''));
+            (acc.role === 'seller' && cleanId === 'seller_demo') ||
+            (acc.role === 'buyer' && cleanId === 'buyer_demo') ||
+            (acc.profile && acc.profile.mobile && acc.profile.mobile.replace(/\D/g, '') === cleanId.replace(/\D/g, ''))
+        );
         if (!account) {
             // Account does not exist -> strictly reject
             return false;
         }
-        // Verify password strictly
-        const isPasswordValid = account.passwordHash === cleanPass ||
-            ((account.id === 'seller_1' || account.id === 'buyer_1') && cleanPass === '123456');
+        // Verify password using SHA-256 hash
+        const isPasswordValid = verifyPassword(cleanPass, account.passwordHash);
         if (!isPasswordValid) {
             // Wrong password -> strictly reject
             return false;
@@ -313,7 +316,7 @@ export const AppProvider = ({ children }) => {
             id: userObj.id,
             email: userObj.email,
             username: userObj.username,
-            passwordHash: 'User@123',
+            passwordHash: hashPassword('User@123'),
             role,
             profile: userObj,
         };
@@ -328,6 +331,7 @@ export const AppProvider = ({ children }) => {
     const signup = (userData, role) => {
         const userId = `user_${Date.now()}`;
         const cleanPassword = userData.password ? userData.password.trim() : 'User@123';
+        const passwordHash = hashPassword(cleanPassword);
         const newUser = {
             id: userId,
             full_name: userData.full_name || (role === 'seller' ? 'Shri Artisan' : 'Priya Patel'),
@@ -354,7 +358,7 @@ export const AppProvider = ({ children }) => {
             id: userId,
             email: newUser.email,
             username: newUser.username,
-            passwordHash: cleanPassword,
+            passwordHash: passwordHash,
             role: role,
             profile: newUser,
         };
@@ -681,9 +685,9 @@ export const AppProvider = ({ children }) => {
         localStorage.clear();
         setCurrentUser(null);
         setCurrentRole('buyer');
-        setProducts(INITIAL_PRODUCTS);
+        setProducts([]);
         setCart([]);
-        setWishlist(['prod_1', 'prod_4']);
+        setWishlist([]);
         setOrders(INITIAL_ORDERS);
         setCreditTransactions(INITIAL_CREDIT_TRANSACTIONS);
         setReviews(INITIAL_REVIEWS);
